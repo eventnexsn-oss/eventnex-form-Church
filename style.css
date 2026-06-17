@@ -137,3 +137,9 @@ form { width: 100%; }
 
 /* --- DESIGN RESPONSIVE --- */
 @media (max-width: 1100px) { header { padding: 2rem; } .sidebar-close { right: 2rem; } .app-container { flex-direction: column; padding: 8rem 2rem 8rem 2rem; gap: 4rem; } .left-column, .main-title { position: relative; max-width: 100%; width: 100%; } .right-column { max-width: 100%; width: 100%; } }
+/* --- ZOOM 90% SUR ORDINATEUR --- */
+@media (min-width: 1101px) {
+    body {
+        zoom: 0.9;
+    }
+}
