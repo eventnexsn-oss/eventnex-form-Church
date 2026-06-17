@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventnex - Formulaire Églises</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">EVENTNEX</div>
+        <div class="hamburger" id="hamburger-btn">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </header>
+
+    <div class="overlay" id="menu-overlay"></div>
+    <nav class="sidebar" id="sidebar-menu">
+        <div class="sidebar-close" id="sidebar-close-btn">&times;</div>
+        <div class="sidebar-links">
+            <a href="https://eventnex.cloud" target="_blank">Accueil</a>
+            <a href="/politique-de-confidentialite.html" target="_blank">Politique de confidentialité complète</a>
+        </div>
+    </nav>
+
+    <main class="app-container">
+        
+        <section class="left-column">
+            <h1 class="main-title">Formulaire pré-<br>démonstration -<br>Eglises</h1>
+        </section>
+
+        <section class="right-column">
+            
+            <div id="thank-you-screen" class="hidden">
+                <h2>Merci !</h2>
+                <p>Vos réponses ont bien été enregistrées.</p>
+                <p>Redirection vers la plateforme dans <span id="countdown">5</span> secondes...</p>
+            </div>
+
+            <form id="eventnex-form" novalidate>
+                
+                <div class="form-step active" data-step="1">
+                    <h2 class="step-heading">Informations générales</h2>
+                    
+                    <div class="form-field">
+                        <label class="field-label">1. Nom de l'église / paroisse <span class="required-star">*</span></label>
+                        <input type="text" name="nom_eglise" class="input-text required-field">
+                    </div>
+                    
+                    <div class="form-field">
+                        <label class="field-label">2. Sous-entité / groupe <span class="field-desc">(optionnel)</span></label>
+                        <input type="text" name="sous_entite" class="input-text">
+                    </div>
+
+                    <div class="form-field">
+                        <label class="field-label">3. Nom du responsable <span class="required-star">*</span></label>
+                        <input type="text" name="nom_responsable" class="input-text required-field">
+                    </div>
+
+                    <div class="form-field select-wrapper">
+                        <label class="field-label">4. Fonction <span class="required-star">*</span></label>
+                        <select name="fonction" class="input-select required-field data-autre-trigger">
+                            <option value="" disabled selected></option>
+                            <option value="Curé / Pasteur">Curé / Pasteur</option>
+                            <option value="Responsable événementiel">Responsable événementiel</option>
+                            <option value="Secrétaire paroissial">Secrétaire paroissial</option>
+                            <option value="Responsable des membres">Responsable des membres</option>
+                            <option value="Autre">Autre</option>
+                        </select>
+                        <div class="input-autre-container hidden">
+                            <input type="text" name="fonction_autre" class="input-text input-autre-field" placeholder="Veuillez préciser votre fonction">
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <label class="field-label">5. Téléphone <span class="required-star">*</span></label>
+                        <input type="tel" name="telephone" class="input-text required-field">
+                    </div>
+
+                    <div class="form-field">
+                        <label class="field-label">6. Email <span class="required-star">*</span></label>
+                        <input type="email" name="email" class="input-text required-field">
+                    </div>
+
+                    <div class="form-field select-wrapper">
+                        <label class="field-label">7. Ville / Quartier <span class="required-star">*</span></label>
+                        <select name="ville" class="input-select required-field data-autre-trigger">
+                            <option value="" disabled selected></option>
+                            <option value="Dakar">Dakar</option>
+                            <option value="Guédiawaye">Guédiawaye</option>
+                            <option value="Pikine">Pikine</option>
+                            <option value="Rufisque">Rufisque</option>
+                            <option value="Thiès">Thiès</option>
+                            <option value="Mbour">Mbour</option>
+                            <option value="Saint-Louis">Saint-Louis</option>
+                            <option value="Kaolack">Kaolack</option>
+                            <option value="Ziguinchor">Ziguinchor</option>
+                            <option value="Autre">Autre</option>
+                        </select>
+                        <div class="input-autre-container hidden">
+                            <input type="text" name="ville_autre" class="input-text input-autre-field" placeholder="Veuillez préciser votre ville / quartier">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-step" data-step="2">
+                    <h2 class="step-heading">Vos événements</h2>
+                    
+                    <div class="form-field choice-group-required">
+                        <label class="field-label">8. Quel est le nombre moyen de participants à vos événements ? <span class="required-star">*</span></label>
+                        <div class="options-stack">
+                            <label><input type="radio" name="nb_participants" value="Moins de 100"> Moins de 100</label>
+                            <label><input type="radio" name="nb_participants" value="100 – 300"> 100 – 300</label>
+                            <label><input type="radio" name="nb_participants" value="301 – 500"> 301 – 500</label>
+                            <label><input type="radio" name="nb_participants" value="501 – 1 000"> 501 – 1 000</label>
+                            <label><input type="radio" name="nb_participants" value="1 001 – 2 000"> 1 001 – 2 000</label>
+                            <label><input type="radio" name="nb_participants" value="Plus de 2 000"> Plus de 2 000</label>
+                        </div>
+                    </div>
+
+                    <div class="form-field choice-group-required">
+                        <label class="field-label">9. À quelle fréquence organisez-vous des événements ? <span class="required-star">*</span></label>
+                        <div class="options-stack">
+                            <label><input type="radio" name="frequence" value="1 fois par mois"> 1 fois par mois</label>
+                            <label><input type="radio" name="frequence" value="1 fois par trimestre"> 1 fois par trimestre</label>
+                            <label><input type="radio" name="frequence" value="1 fois par semestre"> 1 fois par semestre</label>
+                            <label><input type="radio" name="frequence" value="Uniquement pour les grandes fêtes"> Uniquement pour les grandes fêtes</label>
+                            <label><input type="radio" name="frequence" value="Occasionnellement"> Occasionnellement</label>
+                            <label><input type="radio" name="frequence" value="Autre" class="option-autre-checkbox"> Autre</label>
+                            <div class="input-autre-container hidden">
+                                <input type="text" name="frequence_autre" class="input-text input-autre-field" placeholder="Veuillez préciser la fréquence">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-step" data-step="3">
+                    <h2 class="step-heading">Billetterie et paiements</h2>
+
+                    <div class="form-field choice-group-required">
+                        <label class="field-label">10. Comment vendez-vous vos billets actuellement ? <span class="field-desc">(Plusieurs choix possibles)</span> <span class="required-star">*</span></label>
+                        <div class="options-stack">
+                            <label><input type="checkbox" name="vente_billets[]" value="Sur place le jour J"> Sur place le jour J</label>
+                            <label><input type="checkbox" name="vente_billets[]" value="Sur place en avant-vente"> Sur place en avant-vente</label>
+                            <label><input type="checkbox" name="vente_billets[]" value="Par WhatsApp"> Par WhatsApp</label>
+                            <label><input type="checkbox" name="vente_billets[]" value="Par téléphone"> Par téléphone</label>
+                            <label><input type="checkbox" name="vente_billets[]" value="Par site web"> Par site web</label>
+                            <label><input type="checkbox" name="vente_billets[]" value="Autre" class="option-autre-checkbox"> Autre</label>
+                            <div class="input-autre-container hidden">
+                                <input type="text" name="vente_billets_autre" class="input-text input-autre-field" placeholder="Veuillez préciser">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-field choice-group-required">
+                        <label class="field-label">11. Vos événements sont-ils généralement : <span class="required-star">*</span></label>
+                        <div class="options-stack">
+                            <label><input type="radio" name="type_evenement" value="Gratuits"> Gratuits</label>
+                            <label><input type="radio" name="type_evenement" value="Payants"> Payants</label>
+                            <label><input type="radio" name="type_evenement" value="Les deux selon l'événement"> Les deux selon l'événement</label>
+                            <label><input type="radio" name="type_evenement" value="Participation libre"> Participation libre</label>
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <label class="field-label">12. Si payants, quel est le prix moyen du billet ? <span class="field-desc">(Optionnel)</span></label>
+                        <div class="options-stack">
+                            <label><input type="radio" name="prix_moyen" value="Moins de 500 FCFA"> Moins de 500 FCFA</label>
+                            <label><input type="radio" name="prix_moyen" value="500 – 1 000 FCFA"> 500 – 1 000 FCFA</label>
+                            <label><input type="radio" name="prix_moyen" value="1 001 – 2 500 FCFA"> 1 001 – 2 500 FCFA</label>
+                            <label><input type="radio" name="prix_moyen" value="2 501 – 5 000 FCFA"> 2 501 – 5 000 FCFA</label>
+                            <label><input type="radio" name="prix_moyen" value="Plus de 5 000 FCFA"> Plus de 5 000 FCFA</label>
+                            <label><input type="radio" name="prix_moyen" value="Non concerné"> Non concerné</label>
+                        </div>
+                    </div>
+
+                    <div class="form-field choice-group-required">
+                        <label class="field-label">13. Quels sont vos problèmes avec la billetterie actuelle ? <span class="field-desc">(Plusieurs choix possibles)</span> <span class="required-star">*</span></label>
+                        <div class="options-stack">
+                            <label><input type="checkbox" name="problemes_billetterie[]" value="Files d'attente trop longues"> Files d'attente trop longues</label>
+                            <label><input type="checkbox" name="problemes_billetterie[]" value="Faux billets / resquilleurs"> Faux billets / resquilleurs</label>
+                            <label><input type="checkbox" name="problemes_billetterie[]" value="Aucune visibilité sur les ventes en temps réel"> Aucune visibilité sur les ventes en temps réel</label>
+                            <label><input type="checkbox" name="problemes_billetterie[]" value="Gestion manuelle trop chronophage"> Gestion manuelle trop chronophage</label>
+                            <label><input type="checkbox" name="problemes_billetterie[]" value="Pas de traçabilité des ventes"> Pas de traçabilité des ventes</label>
+                            <label><input type="checkbox" name="problemes_billetterie[]" value="Autre" class="option-autre-checkbox"> Autre</label>
+                            <div class="input-autre-container hidden">
+                                <input type="text" name="problemes_billetterie_autre" class="input-text input-autre-field" placeholder="Veuillez préciser">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-step" data-step="4">
+                    <h2 class="step-heading">Contrôle d'accès et logistique</h2>
+
+                    <div class="form-field choice-group-required">
+                        <label class="field-label">14. Comment contrôlez-vous les entrées le jour J ? <span class="required-star">*</span></label>
+                        <div class="options-stack">
+                            <label><input type="radio" name="controle_entrees" value="Tickets papier"> Tickets papier</label>
+                            <label><input type="radio" name="controle_entrees" value="Liste d'émargement"> Liste d'émargement</label>
+                            <label><input type="radio" name="controle_entrees" value="Sécurité / vigiles"> Sécurité / vigiles</label>
+                            <label><input type="radio" name="controle_entrees" value="Aucun contrôle formel"> Aucun contrôle formel</label>
+                            <label><input type="radio" name="controle_entrees" value="Autre" class="option-autre-checkbox"> Autre</label>
+                            <div class="input-autre-container hidden">
+                                <input type="text" name="controle_entrees_autre" class="input-text input-autre-field" placeholder="Veuillez préciser">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-field choice-group-required">
+                        <label class="field-label">15. Disposez-vous d'une connexion Internet dans votre lieu d'événement ? <span class="required-star">*</span></label>
+                        <div class="options-stack">
+                            <label><input type="radio" name="internet" value="Wi-Fi stable"> Wi-Fi stable</label>
+                            <label><input type="radio" name="internet" value="Wi-Fi instable"> Wi-Fi instable</label>
+                            <label><input type="radio" name="internet" value="Pas de Wi-Fi, uniquement la 4G"> Pas de Wi-Fi, uniquement la 4G</label>
+                            <label><input type="radio" name="internet" value="Pas de connexion"> Pas de connexion</label>
+                        </div>
+                    </div>
+
+                    <div class="form-field choice-group-required">
+                        <label class="field-label">16. Combien de membres pouvez-vous mobiliser pour les entrées ? <span class="required-star">*</span></label>
+                        <div class="options-stack">
+                            <label><input type="radio" name="membres_entrees" value="1 – 2"> 1 – 2</label>
+                            <label><input type="radio" name="membres_entrees" value="3 – 4"> 3 – 4</label>
+                            <label><input type="radio" name="membres_entrees" value="5 – 6"> 5 – 6</label>
+                            <label><input type="radio" name="membres_entrees" value="7 – 10"> 7 – 10</label>
+                            <label><input type="radio" name="membres_entrees" value="Plus de 10"> Plus de 10</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-step" data-step="5">
+                    <h2 class="step-heading">Communication et bilan</h2>
+
+                    <div class="form-field choice-group-required">
+                        <label class="field-label">17. Comment communiquez-vous avec les participants avant un événement ? <span class="field-desc">(Plusieurs choix possibles)</span> <span class="required-star">*</span></label>
+                        <div class="options-stack">
+                            <label><input type="checkbox" name="com_avant[]" value="WhatsApp"> WhatsApp</label>
+                            <label><input type="checkbox" name="com_avant[]" value="SMS"> SMS</label>
+                            <label><input type="checkbox" name="com_avant[]" value="Email"> Email</label>
+                            <label><input type="checkbox" name="com_avant[]" value="Affiches / Flyers"> Affiches / Flyers</label>
+                            <label><input type="checkbox" name="com_avant[]" value="Annonces pendant les messes"> Annonces pendant les messes</label>
+                            <label><input type="checkbox" name="com_avant[]" value="Autre" class="option-autre-checkbox"> Autre</label>
+                            <div class="input-autre-container hidden">
+                                <input type="text" name="com_avant_autre" class="input-text input-autre-field" placeholder="Veuillez préciser">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-field choice-group-required">
+                        <label class="field-label">18. Quelles sont vos difficultés en communication ? <span class="field-desc">(Plusieurs choix possibles)</span> <span class="required-star">*</span></label>
+                        <div class="options-stack">
+                            <label><input type="checkbox" name="difficulte_com[]" value="Impossible de toucher tout le monde en même temps"> Impossible de toucher tout le monde en même temps</label>
+                            <label><input type="checkbox" name="difficulte_com[]" value="Pas de liste centrale des contacts"> Pas de liste centrale des contacts</label>
+                            <label><input type="checkbox" name="difficulte_com[]" value="Messages non lus sur WhatsApp"> Messages non lus sur WhatsApp</label>
+                            <label><input type="checkbox" name="difficulte_com[]" value="Autre" class="option-autre-checkbox"> Autre</label>
+                            <div class="input-autre-container hidden">
+                                <input type="text" name="difficulte_com_autre" class="input-text input-autre-field" placeholder="Veuillez préciser">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-field choice-group-required">
+                        <label class="field-label">19. Comment faites-vous le bilan après un événement ? <span class="field-desc">(Plusieurs choix possibles)</span> <span class="required-star">*</span></label>
+                        <div class="options-stack">
+                            <label><input type="checkbox" name="bilan[]" value="Comptage manuel des entrées"> Comptage manuel des entrées</label>
+                            <label><input type="checkbox" name="bilan[]" value="Calcul des recettes sur Excel"> Calcul des recettes sur Excel</label>
+                            <label><input type="checkbox" name="bilan[]" value="Compte-rendu en réunion"> Compte-rendu en réunion</label>
+                            <label><input type="checkbox" name="bilan[]" value="Aucun bilan formel"> Aucun bilan formel</label>
+                            <label><input type="checkbox" name="bilan[]" value="Autre" class="option-autre-checkbox"> Autre</label>
+                            <div class="input-autre-container hidden">
+                                <input type="text" name="bilan_autre" class="input-text input-autre-field" placeholder="Veuillez préciser">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-step" data-step="6">
+                    <h2 class="step-heading">Gouvernance et outils de travail</h2>
+
+                    <div class="form-field choice-group-required">
+                        <label class="field-label">20. Quels outils utilisez-vous pour gérer votre organisation au quotidien ? <span class="field-desc">(Plusieurs choix possibles)</span> <span class="required-star">*</span></label>
+                        <div class="options-stack">
+                            <label><input type="checkbox" name="outils[]" value="Excel / Google Sheets"> Excel / Google Sheets</label>
+                            <label><input type="checkbox" name="outils[]" value="Google Drive / Dropbox"> Google Drive / Dropbox</label>
+                            <label><input type="checkbox" name="outils[]" value="Trello / Asana / Notion"> Trello / Asana / Notion</label>
+                            <label><input type="checkbox" name="outils[]" value="WhatsApp (groupes)"> WhatsApp (groupes)</label>
+                            <label><input type="checkbox" name="outils[]" value="Email"> Email</label>
+                            <label><input type="checkbox" name="outils[]" value="Agenda papier"> Agenda papier</label>
+                            <label><input type="checkbox" name="outils[]" value="Aucun outil spécifique"> Aucun outil spécifique</label>
+                            <label><input type="checkbox" name="outils[]" value="Autre" class="option-autre-checkbox"> Autre</label>
+                            <div class="input-autre-container hidden">
+                                <input type="text" name="outils_autre" class="input-text input-autre-field" placeholder="Veuillez préciser">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-field choice-group-required">
+                        <label class="field-label">21. Comment gérez-vous les plannings et les tâches de vos membres ? <span class="required-star">*</span></label>
+                        <div class="options-stack">
+                            <label><input type="radio" name="plannings" value="De manière informelle (à l'oral)"> De manière informelle (à l'oral)</label>
+                            <label><input type="radio" name="plannings" value="Sur WhatsApp"> Sur WhatsApp</label>
+                            <label><input type="radio" name="plannings" value="Sur Excel / Google Sheets"> Sur Excel / Google Sheets</label>
+                            <label><input type="radio" name="plannings" value="Avec un outil de gestion de projet"> Avec un outil de gestion de projet</label>
+                            <label><input type="radio" name="plannings" value="Aucune gestion formelle"> Aucune gestion formelle</label>
+                            <label><input type="radio" name="plannings" value="Autre" class="option-autre-checkbox"> Autre</label>
+                            <div class="input-autre-container hidden">
+                                <input type="text" name="plannings_autre" class="input-text input-autre-field" placeholder="Veuillez préciser">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-field choice-group-required">
+                        <label class="field-label">22. Avez-vous des procédures ou des checklists pour chaque événement ? <span class="required-star">*</span></label>
+                        <div class="options-stack">
+                            <label><input type="radio" name="procedures" value="Oui, des documents écrits"> Oui, des documents écrits</label>
+                            <label><input type="radio" name="procedures" value="Oui, mais uniquement à l'oral"> Oui, mais uniquement à l'oral</label>
+                            <label><input type="radio" name="procedures" value="Non, tout est fait au fur et à mesure"> Non, tout est fait au fur et à mesure</label>
+                            <label><input type="radio" name="procedures" value="Autre" class="option-autre-checkbox"> Autre</label>
+                            <div class="input-autre-container hidden">
+                                <input type="text" name="procedures_autre" class="input-text input-autre-field" placeholder="Veuillez préciser">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-field choice-group-required">
+                        <label class="field-label">23. Comment archivez-vous les informations de vos événements passés ? <span class="field-desc">(Plusieurs choix possibles)</span> <span class="required-star">*</span></label>
+                        <div class="options-stack">
+                            <label><input type="checkbox" name="archivage[]" value="Dossiers papier"> Dossiers papier</label>
+                            <label><input type="checkbox" name="archivage[]" value="Excel / Google Sheets"> Excel / Google Sheets</label>
+                            <label><input type="checkbox" name="archivage[]" value="Photos / vidéos"> Photos / vidéos</label>
+                            <label><input type="checkbox" name="archivage[]" value="Aucun archivage"> Aucun archivage</label>
+                            <label><input type="checkbox" name="archivage[]" value="Autre" class="option-autre-checkbox"> Autre</label>
+                            <div class="input-autre-container hidden">
+                                <input type="text" name="archivage_autre" class="input-text input-autre-field" placeholder="Veuillez préciser">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-step" data-step="7">
+                    <h2 class="step-heading">Vos attentes</h2>
+
+                    <div class="form-field choice-group-required">
+                        <label class="field-label">24. Quelles sont vos principales difficultés actuelles ? <span class="field-desc">(Plusieurs choix possibles)</span> <span class="required-star">*</span></label>
+                        <div class="options-stack">
+                            <label><input type="checkbox" name="difficultes_actuelles[]" value="Temps de préparation trop long"> Temps de préparation trop long</label>
+                            <label><input type="checkbox" name="difficultes_actuelles[]" value="Files d'attente difficiles à gérer"> Files d'attente difficiles à gérer</label>
+                            <label><input type="checkbox" name="difficultes_actuelles[]" value="Manque de visibilité sur les ventes"> Manque de visibilité sur les ventes</label>
+                            <label><input type="checkbox" name="difficultes_actuelles[]" value="Fraude / resquilleurs"> Fraude / resquilleurs</label>
+                            <label><input type="checkbox" name="difficultes_actuelles[]" value="Communication inefficace"> Communication inefficace</label>
+                            <label><input type="checkbox" name="difficultes_actuelles[]" value="Aucun suivi des données"> Aucun suivi des données</label>
+                            <label><input type="checkbox" name="difficultes_actuelles[]" value="Autre" class="option-autre-checkbox"> Autre</label>
+                            <div class="input-autre-container hidden">
+                                <input type="text" name="difficultes_actuelles_autre" class="input-text input-autre-field" placeholder="Veuillez préciser">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-field choice-group-required">
+                        <label class="field-label">25. Quel est votre principal objectif avec Eventnex ? <span class="required-star">*</span></label>
+                        <div class="options-stack">
+                            <label><input type="radio" name="objectif" value="Gagner du temps"> Gagner du temps</label>
+                            <label><input type="radio" name="objectif" value="Sécuriser les recettes"> Sécuriser les recettes</label>
+                            <label><input type="radio" name="objectif" value="Améliorer l'expérience des participants"> Améliorer l'expérience des participants</label>
+                            <label><input type="radio" name="objectif" value="Avoir une vision claire des données"> Avoir une vision claire des données</label>
+                            <label><input type="radio" name="objectif" value="Professionnaliser les événements"> Professionnaliser les événements</label>
+                            <label><input type="radio" name="objectif" value="Autre" class="option-autre-checkbox"> Autre</label>
+                            <div class="input-autre-container hidden">
+                                <input type="text" name="objectif_autre" class="input-text input-autre-field" placeholder="Veuillez préciser">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-step" data-step="8">
+                    <h2 class="step-heading">Organisation de la démonstration</h2>
+
+                    <div class="form-field choice-group-required">
+                        <label class="field-label">26. Où souhaitez-vous la démonstration ? <span class="required-star">*</span></label>
+                        <div class="options-stack">
+                            <label><input type="radio" name="lieu_demo" value="Dans votre église (face-à-face)"> Dans votre église (face-à-face)</label>
+                            <label><input type="radio" name="lieu_demo" value="Par Google Meet"> Par Google Meet</label>
+                            <label><input type="radio" name="lieu_demo" value="Par WhatsApp (visio)"> Par WhatsApp (visio)</label>
+                        </div>
+                    </div>
+
+                    <div class="form-field calendar-field-wrapper">
+                        <label class="field-label">27. Quand êtes-vous disponible ? <span class="required-star">*</span></label>
+                        <div class="datetime-input-container">
+                            <input type="datetime-local" name="disponibilites" class="input-datetime required-field">
+                        </div>
+                    </div>
+
+                    <div class="form-field choice-group-required">
+                        <label class="field-label">28. Souhaitez-vous un accompagnement pour votre premier événement ? <span class="required-star">*</span></label>
+                        <div class="options-stack">
+                            <label><input type="radio" name="accompagnement" value="Oui, former nos membres"> Oui, former nos membres</label>
+                            <label><input type="radio" name="accompagnement" value="Oui, aide à la création des événements"> Oui, aide à la création des événements</label>
+                            <label><input type="radio" name="accompagnement" value="Non, on se débrouille"> Non, on se débrouille</label>
+                            <label><input type="radio" name="accompagnement" value="Pas encore"> Pas encore</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-step" data-step="9">
+                    <h2 class="step-heading">Informations complémentaires</h2>
+
+                    <div class="form-field">
+                        <label class="field-label">29. Avez-vous d'autres choses à nous partager ? <span class="field-desc">(Optionnel)</span></label>
+                        <textarea name="commentaires" class="input-textarea" placeholder="Vos remarques ou questions éventuelles..."></textarea>
+                    </div>
+
+                    <div class="consent-wrapper">
+                        <input type="checkbox" name="consentement" id="consentement-check" checked required>
+                        <label for="consentement-check">
+                            Je consens à ce qu'Eventnex traite mes données dans le seul but d'organiser ma démonstration et de me contacter à ce sujet. Mes données seront conservées jusqu'à 3 mois après la démonstration. Je peux retirer mon consentement à tout moment en contactant l'entreprise. <a href="/politique-de-confidentialite.html" target="_blank" class="link-view-more">Voir plus</a>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-navigation-row" id="navigation-block">
+                    <div class="error-toast-indicator" id="validation-error-toast">Certains champs obligatoires sont vides ou incorrects.</div>
+                    
+                    <button type="button" class="nav-btn invisible" id="prev-step-btn">
+                        &larr; Précédent
+                    </button>
+                    
+                    <button type="button" class="nav-btn" id="next-step-btn">
+                        Suivant &rarr;
+                    </button>
+                    
+                    <button type="submit" class="submit-btn hidden" id="submit-form-btn">
+                        Soumettre
+                    </button>
+                </div>
+
+            </form>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
