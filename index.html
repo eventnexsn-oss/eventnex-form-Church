@@ -21,8 +21,8 @@
     <nav class="sidebar" id="sidebar-menu">
         <div class="sidebar-close" id="sidebar-close-btn">&times;</div>
         <div class="sidebar-links">
-            <a href="https://eventnex.cloud" target="_blank">Accueil</a>
-            <a href="/politique-de-confidentialite.html" target="_blank">Politique de confidentialité complète</a>
+            <a href="https://eventnex.cloud" target="_blank">Accueil↗</a>
+            <a href="/politique-de-confidentialite.html" target="_blank">Politique de confidentialité complète↗</a>
         </div>
     </nav>
 
@@ -197,13 +197,13 @@
                     <h2 class="step-heading">Contrôle d'accès et logistique</h2>
 
                     <div class="form-field choice-group-required">
-                        <label class="field-label">14. Comment contrôlez-vous les entrées le jour J ? <span class="required-star">*</span></label>
+                        <label class="field-label">14. Comment contrôlez-vous les entrées le jour J ? <span class="field-desc">(Plusieurs choix possibles)</span> <span class="required-star">*</span></label>
                         <div class="options-stack">
-                            <label><input type="radio" name="controle_entrees" value="Tickets papier"> Tickets papier</label>
-                            <label><input type="radio" name="controle_entrees" value="Liste d'émargement"> Liste d'émargement</label>
-                            <label><input type="radio" name="controle_entrees" value="Sécurité / vigiles"> Sécurité / vigiles</label>
-                            <label><input type="radio" name="controle_entrees" value="Aucun contrôle formel"> Aucun contrôle formel</label>
-                            <label><input type="radio" name="controle_entrees" value="Autre" class="option-autre-checkbox"> Autre</label>
+                            <label><input type="checkbox" name="controle_entrees[]" value="Tickets papier"> Tickets papier</label>
+                            <label><input type="checkbox" name="controle_entrees[]" value="Liste d'émargement"> Liste d'émargement</label>
+                            <label><input type="checkbox" name="controle_entrees[]" value="Sécurité / vigiles"> Sécurité / vigiles</label>
+                            <label><input type="checkbox" name="controle_entrees[]" value="Aucun contrôle formel"> Aucun contrôle formel</label>
+                            <label><input type="checkbox" name="controle_entrees[]" value="Autre" class="option-autre-checkbox"> Autre</label>
                             <div class="input-autre-container hidden">
                                 <input type="text" name="controle_entrees_autre" class="input-text input-autre-field" placeholder="Veuillez préciser">
                             </div>
@@ -211,12 +211,12 @@
                     </div>
 
                     <div class="form-field choice-group-required">
-                        <label class="field-label">15. Disposez-vous d'une connexion Internet dans votre lieu d'événement ? <span class="required-star">*</span></label>
+                        <label class="field-label">15. Disposez-vous d'une connexion Internet dans votre lieu d'événement ? <span class="field-desc">(Plusieurs choix possibles)</span> <span class="required-star">*</span></label>
                         <div class="options-stack">
-                            <label><input type="radio" name="internet" value="Wi-Fi stable"> Wi-Fi stable</label>
-                            <label><input type="radio" name="internet" value="Wi-Fi instable"> Wi-Fi instable</label>
-                            <label><input type="radio" name="internet" value="Pas de Wi-Fi, uniquement la 4G"> Pas de Wi-Fi, uniquement la 4G</label>
-                            <label><input type="radio" name="internet" value="Pas de connexion"> Pas de connexion</label>
+                            <label><input type="checkbox" name="internet[]" value="Wi-Fi stable"> Wi-Fi stable</label>
+                            <label><input type="checkbox" name="internet[]" value="Wi-Fi instable"> Wi-Fi instable</label>
+                            <label><input type="checkbox" name="internet[]" value="Pas de Wi-Fi, uniquement la 4G"> Pas de Wi-Fi, uniquement la 4G</label>
+                            <label><input type="checkbox" name="internet[]" value="Pas de connexion"> Pas de connexion</label>
                         </div>
                     </div>
 
@@ -299,14 +299,14 @@
                     </div>
 
                     <div class="form-field choice-group-required">
-                        <label class="field-label">21. Comment gérez-vous les plannings et les tâches de vos membres ? <span class="required-star">*</span></label>
+                        <label class="field-label">21. Comment gérez-vous les plannings et les tâches de vos membres ? <span class="field-desc">(Plusieurs choix possibles)</span> <span class="required-star">*</span></label>
                         <div class="options-stack">
-                            <label><input type="radio" name="plannings" value="De manière informelle (à l'oral)"> De manière informelle (à l'oral)</label>
-                            <label><input type="radio" name="plannings" value="Sur WhatsApp"> Sur WhatsApp</label>
-                            <label><input type="radio" name="plannings" value="Sur Excel / Google Sheets"> Sur Excel / Google Sheets</label>
-                            <label><input type="radio" name="plannings" value="Avec un outil de gestion de projet"> Avec un outil de gestion de projet</label>
-                            <label><input type="radio" name="plannings" value="Aucune gestion formelle"> Aucune gestion formelle</label>
-                            <label><input type="radio" name="plannings" value="Autre" class="option-autre-checkbox"> Autre</label>
+                            <label><input type="checkbox" name="plannings[]" value="De manière informelle (à l'oral)"> De manière informelle (à l'oral)</label>
+                            <label><input type="checkbox" name="plannings[]" value="Sur WhatsApp"> Sur WhatsApp</label>
+                            <label><input type="checkbox" name="plannings[]" value="Sur Excel / Google Sheets"> Sur Excel / Google Sheets</label>
+                            <label><input type="checkbox" name="plannings[]" value="Avec un outil de gestion de projet"> Avec un outil de gestion de projet</label>
+                            <label><input type="checkbox" name="plannings[]" value="Aucune gestion formelle"> Aucune gestion formelle</label>
+                            <label><input type="checkbox" name="plannings[]" value="Autre" class="option-autre-checkbox"> Autre</label>
                             <div class="input-autre-container hidden">
                                 <input type="text" name="plannings_autre" class="input-text input-autre-field" placeholder="Veuillez préciser">
                             </div>
@@ -361,14 +361,14 @@
                     </div>
 
                     <div class="form-field choice-group-required">
-                        <label class="field-label">25. Quel est votre principal objectif avec Eventnex ? <span class="required-star">*</span></label>
+                        <label class="field-label">25. Quel est votre principal objectif avec Eventnex ? <span class="field-desc">(Plusieurs choix possibles)</span> <span class="required-star">*</span></label>
                         <div class="options-stack">
-                            <label><input type="radio" name="objectif" value="Gagner du temps"> Gagner du temps</label>
-                            <label><input type="radio" name="objectif" value="Sécuriser les recettes"> Sécuriser les recettes</label>
-                            <label><input type="radio" name="objectif" value="Améliorer l'expérience des participants"> Améliorer l'expérience des participants</label>
-                            <label><input type="radio" name="objectif" value="Avoir une vision claire des données"> Avoir une vision claire des données</label>
-                            <label><input type="radio" name="objectif" value="Professionnaliser les événements"> Professionnaliser les événements</label>
-                            <label><input type="radio" name="objectif" value="Autre" class="option-autre-checkbox"> Autre</label>
+                            <label><input type="checkbox" name="objectif[]" value="Gagner du temps"> Gagner du temps</label>
+                            <label><input type="checkbox" name="objectif[]" value="Sécuriser les recettes"> Sécuriser les recettes</label>
+                            <label><input type="checkbox" name="objectif[]" value="Améliorer l'expérience des participants"> Améliorer l'expérience des participants</label>
+                            <label><input type="checkbox" name="objectif[]" value="Avoir une vision claire des données"> Avoir une vision claire des données</label>
+                            <label><input type="checkbox" name="objectif[]" value="Professionnaliser les événements"> Professionnaliser les événements</label>
+                            <label><input type="checkbox" name="objectif[]" value="Autre" class="option-autre-checkbox"> Autre</label>
                             <div class="input-autre-container hidden">
                                 <input type="text" name="objectif_autre" class="input-text input-autre-field" placeholder="Veuillez préciser">
                             </div>
@@ -420,6 +420,14 @@
                             Je consens à ce qu'Eventnex traite mes données dans le seul but d'organiser ma démonstration et de me contacter à ce sujet. Mes données seront conservées jusqu'à 3 mois après la démonstration. Je peux retirer mon consentement à tout moment en contactant l'entreprise. <a href="/politique-de-confidentialite.html" target="_blank" class="link-view-more">Voir plus</a>
                         </label>
                     </div>
+                </div>
+
+                <div class="form-step" data-step="10">
+                    <h2 class="step-heading">Récapitulatif de vos réponses</h2>
+                    <p class="summary-instructions">Vérifiez vos informations avant l'envoi. Vous pouvez utiliser le bouton Précédent pour modifier une réponse.</p>
+                    
+                    <div id="summary-container" class="summary-box">
+                        </div>
                 </div>
 
                 <div class="form-navigation-row" id="navigation-block">

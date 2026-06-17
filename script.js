@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     
     // RENSEIGNEZ VOTRE URL DE DÉPLOIEMENT GOOGLE APPS SCRIPT ICI
-    const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzXWr7DY_JQf2YE6hQVPaIYP7hxZ8jnlU9qzls8fXAI7ybz7VoCfDBIjjLYFqH3eFX3Aw/exec";
+    const GOOGLE_APPS_SCRIPT_URL = "Vhttps://script.google.com/macros/s/AKfycbzXWr7DY_JQf2YE6hQVPaIYP7hxZ8jnlU9qzls8fXAI7ybz7VoCfDBIjjLYFqH3eFX3Aw/exec";
 
     /* --- COMPOSANTS DE L'INTERFACE & SIDEBAR --- */
     const hamburgerBtn = document.getElementById("hamburger-btn");
@@ -12,8 +12,6 @@ document.addEventListener("DOMContentLoaded", () => {
     function openSidebar() {
         sidebarMenu.classList.add("visible");
         menuOverlay.classList.add("visible");
-        
-        // Animation du bouton hamburger vers une croix (X)
         const bars = hamburgerBtn.querySelectorAll("div");
         bars[0].style.transform = "translateY(7px) rotate(45deg)";
         bars[1].style.opacity = "0";
@@ -23,8 +21,6 @@ document.addEventListener("DOMContentLoaded", () => {
     function closeSidebar() {
         sidebarMenu.classList.remove("visible");
         menuOverlay.classList.remove("visible");
-        
-        // Rétablissement des barres du hamburger
         const bars = hamburgerBtn.querySelectorAll("div");
         bars[0].style.transform = "none";
         bars[1].style.opacity = "1";
@@ -32,20 +28,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     hamburgerBtn.addEventListener("click", () => {
-        if (sidebarMenu.classList.contains("visible")) {
-            closeSidebar();
-        } else {
-            openSidebar();
-        }
+        if (sidebarMenu.classList.contains("visible")) closeSidebar();
+        else openSidebar();
     });
 
     sidebarCloseBtn.addEventListener("click", closeSidebar);
     menuOverlay.addEventListener("click", closeSidebar);
 
-
     /* --- SYSTÈME DYNAMIQUE POUR LES OPTIONS "AUTRE" --- */
-    
-    // Gérer les balises de sélection <select>
     document.querySelectorAll(".data-autre-trigger").forEach(selectElement => {
         selectElement.addEventListener("change", (e) => {
             const container = e.target.closest(".form-field");
@@ -64,13 +54,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Gérer les boutons radio et les cases à cocher <input>
     document.querySelectorAll(".option-autre-checkbox").forEach(checkboxElement => {
         const groupContainer = checkboxElement.closest(".options-stack");
         const subContainer = groupContainer.querySelector(".input-autre-container");
         const subInputField = subContainer.querySelector(".input-autre-field");
 
-        // Écouter les changements sur tout le groupe d'options
         groupContainer.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(inputItem => {
             inputItem.addEventListener("change", () => {
                 if (checkboxElement.checked) {
@@ -85,10 +73,63 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    /* --- GESTION DU RÉCAPITULATIF (ÉTAPE 10) --- */
+    function generateSummary() {
+        const summaryContainer = document.getElementById('summary-container');
+        summaryContainer.innerHTML = '';
+        const formData = new FormData(appForm);
+        
+        // Dictionnaire des questions
+        const labels = {
+            nom_eglise: "Nom de l'église / paroisse", sous_entite: "Sous-entité", nom_responsable: "Nom du responsable",
+            fonction: "Fonction", fonction_autre: "Fonction (Précision)", telephone: "Téléphone", email: "Email",
+            ville: "Ville / Quartier", ville_autre: "Ville (Précision)", nb_participants: "Nombre moyen de participants",
+            frequence: "Fréquence des événements", frequence_autre: "Fréquence (Précision)", vente_billets: "Vente de billets",
+            vente_billets_autre: "Vente de billets (Précision)", type_evenement: "Type d'événement", prix_moyen: "Prix moyen du billet",
+            problemes_billetterie: "Problèmes billetterie", problemes_billetterie_autre: "Problèmes billetterie (Précision)",
+            controle_entrees: "Contrôle des entrées", controle_entrees_autre: "Contrôle des entrées (Précision)",
+            internet: "Connexion Internet", membres_entrees: "Membres mobilisables", com_avant: "Communication avant l'événement",
+            com_avant_autre: "Communication (Précision)", difficulte_com: "Difficultés de communication", difficulte_com_autre: "Difficultés de com. (Précision)",
+            bilan: "Bilan après événement", bilan_autre: "Bilan (Précision)", outils: "Outils de travail", outils_autre: "Outils (Précision)",
+            plannings: "Gestion des plannings", plannings_autre: "Gestion des plannings (Précision)", procedures: "Procédures et checklists",
+            procedures_autre: "Procédures (Précision)", archivage: "Archivage", archivage_autre: "Archivage (Précision)",
+            difficultes_actuelles: "Difficultés actuelles", difficultes_actuelles_autre: "Difficultés (Précision)", objectif: "Objectif avec Eventnex",
+            objectif_autre: "Objectif (Précision)", lieu_demo: "Lieu de la démonstration", disponibilites: "Disponibilités",
+            accompagnement: "Accompagnement souhaité", commentaires: "Commentaires"
+        };
+
+        const dataMap = new Map();
+        for (const [key, value] of formData.entries()) {
+            if (!value || key === 'consentement') continue;
+            const cleanKey = key.replace('[]', '');
+            if (dataMap.has(cleanKey)) {
+                dataMap.set(cleanKey, dataMap.get(cleanKey) + ', ' + value);
+            } else {
+                dataMap.set(cleanKey, value);
+            }
+        }
+
+        dataMap.forEach((val, key) => {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'summary-item';
+            
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'summary-question';
+            questionDiv.innerText = labels[key] || key;
+
+            const answerDiv = document.createElement('div');
+            answerDiv.className = 'summary-answer';
+            answerDiv.innerText = val;
+
+            itemDiv.appendChild(questionDiv);
+            itemDiv.appendChild(answerDiv);
+            summaryContainer.appendChild(itemDiv);
+        });
+    }
 
     /* --- LOGIQUE MULTI-ÉTAPES ET MOTEUR DE VALIDATION --- */
     let activeStepIndex = 1;
-    const finalStepIndex = 9;
+    const finalStepIndex = 10; // Passé à 10
 
     const prevBtn = document.getElementById("prev-step-btn");
     const nextBtn = document.getElementById("next-step-btn");
@@ -97,14 +138,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const appForm = document.getElementById("eventnex-form");
 
     function refreshNavigationControls() {
-        // Gérer la visibilité du bouton Précédent
-        if (activeStepIndex > 1) {
-            prevBtn.classList.remove("invisible");
-        } else {
-            prevBtn.classList.add("invisible");
-        }
+        if (activeStepIndex > 1) prevBtn.classList.remove("invisible");
+        else prevBtn.classList.add("invisible");
 
-        // Basculer entre Suivant et Soumettre à l'étape finale
         if (activeStepIndex === finalStepIndex) {
             nextBtn.classList.add("hidden");
             submitBtn.classList.remove("hidden");
@@ -114,22 +150,16 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function executeScrollToTop() {
-        // Remonte obligatoirement la page vers le haut
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-    }
+    function executeScrollToTop() { window.scrollTo({ top: 0, behavior: "smooth" }); }
 
     function checkStepValidation() {
+        if(activeStepIndex === finalStepIndex) return true; // Pas de validation sur le récapitulatif
+
         const currentStepDOM = document.querySelector(`.form-step[data-step="${activeStepIndex}"]`);
         let stepIsValid = true;
 
-        // Effacer les erreurs précédentes de l'étape active
         currentStepDOM.querySelectorAll(".field-error-message").forEach(msg => msg.remove());
 
-        // 1. Validation des champs de texte, sélections et dates obligatoires
         const standardInputs = currentStepDOM.querySelectorAll(".required-field, .input-autre-field[required]");
         standardInputs.forEach(input => {
             if (!input.value.trim()) {
@@ -138,24 +168,18 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // 2. Validation des groupes d'options obligatoires (Radio / Checkbox)
         const mandatoryChoiceGroups = currentStepDOM.querySelectorAll(".choice-group-required");
         mandatoryChoiceGroups.forEach(group => {
             const options = group.querySelectorAll('input[type="radio"], input[type="checkbox"]');
             const hasSelection = Array.from(options).some(opt => opt.checked);
-            
             if (!hasSelection) {
                 stepIsValid = false;
                 appendValidationError(group, "Veuillez sélectionner au moins une option.");
             }
         });
 
-        // Affichage du toast d'avertissement général
-        if (!stepIsValid) {
-            globalErrorToast.style.display = "block";
-        } else {
-            globalErrorToast.style.display = "none";
-        }
+        if (!stepIsValid) globalErrorToast.style.display = "block";
+        else globalErrorToast.style.display = "none";
 
         return stepIsValid;
     }
@@ -167,12 +191,16 @@ document.addEventListener("DOMContentLoaded", () => {
         targetElement.appendChild(errorContainer);
     }
 
-    // Gestion des clics de navigation
     nextBtn.addEventListener("click", () => {
         if (checkStepValidation()) {
             document.querySelector(`.form-step[data-step="${activeStepIndex}"]`).classList.remove("active");
             activeStepIndex++;
             document.querySelector(`.form-step[data-step="${activeStepIndex}"]`).classList.add("active");
+            
+            if(activeStepIndex === finalStepIndex) {
+                generateSummary(); // Génère le texte quand on arrive à l'étape 10
+            }
+
             refreshNavigationControls();
             executeScrollToTop();
         }
@@ -187,24 +215,13 @@ document.addEventListener("DOMContentLoaded", () => {
         executeScrollToTop();
     });
 
-
-    /* --- PROCESSUS DE SOUMISSION VIA APPS SCRIPT & REDIRECTION --- */
+    /* --- PROCESSUS DE SOUMISSION VIA APPS SCRIPT --- */
     appForm.addEventListener("submit", function(e) {
         e.preventDefault();
-
-        // Contrôle ultime de l'étape de consentement finale
-        const consentCheck = document.getElementById("consentement-check");
-        if (!consentCheck.checked) {
-            alert("Vous devez accepter les conditions de traitement pour soumettre le formulaire.");
-            return;
-        }
-
-        if (!checkStepValidation()) return;
 
         const baseFormData = new FormData(this);
         const urlEncodedParams = new URLSearchParams();
 
-        // Traduction du FormData en chaîne structurée pour l'API Google Sheets
         for (const [key, value] of baseFormData.entries()) {
             if (key.endsWith("[]")) {
                 const standardizedKey = key.replace("[]", "");
@@ -215,7 +232,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        // Transmission des paquets à l'infrastructure Google Apps Script
         fetch(GOOGLE_APPS_SCRIPT_URL, {
             method: "POST",
             mode: "no-cors",
@@ -223,7 +239,6 @@ document.addEventListener("DOMContentLoaded", () => {
             body: urlEncodedParams.toString()
         })
         .then(() => {
-            // Dissimulation des blocs opérationnels et affichage de la confirmation
             appForm.classList.add("hidden");
             document.getElementById("navigation-block").classList.add("hidden");
             document.querySelector(".left-column").classList.add("hidden");
@@ -231,7 +246,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const thankYouSection = document.getElementById("thank-you-screen");
             thankYouSection.classList.remove("hidden");
 
-            // Amorçage du compte à rebours de 5 secondes avant redirection sécurisée
             let remainingSeconds = 5;
             const timerDisplay = document.getElementById("countdown");
             
@@ -240,7 +254,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 timerDisplay.innerText = remainingSeconds;
                 if (remainingSeconds === 0) {
                     clearInterval(countdownTracker);
-                    window.location.href = "https://eventnex.cloud"; // Redirection absolue plateforme
+                    window.location.href = "https://eventnex.cloud";
                 }
             }, 1000);
         })
