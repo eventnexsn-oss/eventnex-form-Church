@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     
     // RENSEIGNEZ VOTRE URL DE DÉPLOIEMENT GOOGLE APPS SCRIPT ICI
-    const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmNiH3ZlFPX8LZuqSBDLsi0sJPfwA3nyztFOUmrxh1JnwkVu-UM66TucddibRBF8NpAw/exec";
+    const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwctlxlqXWNsnE_0_uq_xFEz-kTwCwR5zzodJ3N67iLJ7GDn4ZFBmP_KQlGMcE8VQBA/exec";
 
     /* --- COMPOSANTS DE L'INTERFACE & SIDEBAR --- */
     const hamburgerBtn = document.getElementById("hamburger-btn");
