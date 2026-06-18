@@ -160,6 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         currentStepDOM.querySelectorAll(".field-error-message").forEach(msg => msg.remove());
 
+        // 1. Validation des champs standards
         const standardInputs = currentStepDOM.querySelectorAll(".required-field, .input-autre-field[required]");
         standardInputs.forEach(input => {
             if (!input.value.trim()) {
@@ -168,6 +169,18 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
+        // 2. Validation spécifique du numéro de téléphone (Oblige le "+")
+        const phoneInput = currentStepDOM.querySelector('input[type="tel"]');
+        if (phoneInput && phoneInput.value.trim() !== "") {
+            // Cette règle (Regex) impose un "+" suivi de 6 à 20 chiffres ou espaces
+            const phoneRegex = /^\+[0-9\s\-\.]{6,20}$/;
+            if (!phoneRegex.test(phoneInput.value.trim())) {
+                stepIsValid = false;
+                appendValidationError(phoneInput.closest(".form-field"), "Le numéro doit obligatoirement commencer par '+' suivi de l'indicatif.");
+            }
+        }
+
+        // 3. Validation des groupes d'options (Radio / Checkbox)
         const mandatoryChoiceGroups = currentStepDOM.querySelectorAll(".choice-group-required");
         mandatoryChoiceGroups.forEach(group => {
             const options = group.querySelectorAll('input[type="radio"], input[type="checkbox"]');
