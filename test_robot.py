@@ -34,11 +34,13 @@ def check_option(name, value):
 try:
     print("Démarrage du test automatisé Eventnex...")
 
-    # ÉTAPE 1 : Informations générales
+    # --- ÉTAPE 1 MODIFIÉE : Informations générales ---
+    # Le champ "nom_responsable" contient maintenant l'adresse email selon votre ordre
     driver.find_element(By.NAME, "nom_eglise").send_keys("Église Test Automation")
-    driver.find_element(By.NAME, "nom_responsable").send_keys("Robot Testeur")
+    driver.find_element(By.NAME, "nom_responsable").send_keys("jaimalklyde@gmail.com") 
     Select(driver.find_element(By.NAME, "fonction")).select_by_value("Responsable événementiel")
     driver.find_element(By.NAME, "telephone").send_keys("+221771234567")
+    # email est toujours rempli pour la fonction d'envoi client
     driver.find_element(By.NAME, "email").send_keys("jaimalklyde@gmail.com")
     Select(driver.find_element(By.NAME, "ville")).select_by_value("Dakar")
     click_next()
