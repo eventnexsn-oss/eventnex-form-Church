@@ -1,9 +1,70 @@
 document.addEventListener("DOMContentLoaded", () => {
     
-    // RENSEIGNEZ VOTRE URL DE DÉPLOIEMENT GOOGLE APPS SCRIPT ICI
+    // RENSEIGNEZ VOTRE URL DE DÉPLOIEMENT GOOGLE APPS SCRIPT ICI (Orchestrateur CRM)
     const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyeLQum6GHCey7c0Ak1vCCS9jlW7Rc5UDW9Nzt6QnQHCO1bpCl1F69P31mZVE_4hzvKdg/exec";
 
-    /* --- COMPOSANTS DE L'INTERFACE & SIDEBAR --- */
+    /* --- MODULE DE LOCALISATION & GPS --- */
+    const displayLoc = document.getElementById('display_location');
+    const inputIp = document.getElementById('ip_address');
+    const inputLoc = document.getElementById('localisation_finale');
+    const btnUpdate = document.getElementById('btn_update_location');
+
+    // Détection silencieuse (IP)
+    fetch('https://ipapi.co/json/')
+        .then(response => response.json())
+        .then(data => {
+            inputIp.value = data.ip || "Inconnue";
+            if(inputLoc.value === "") {
+                let ville = data.city ? data.city : "Position approximative";
+                displayLoc.innerText = ville + ", " + (data.country_name || "");
+                inputLoc.value = "[IP] " + ville;
+            }
+        })
+        .catch(err => console.error("Erreur IP:", err));
+
+    // Détection précise (GPS)
+    if(btnUpdate) {
+        btnUpdate.addEventListener("click", function() {
+            if (!navigator.geolocation) {
+                alert("Géolocalisation non supportée.");
+                return;
+            }
+            displayLoc.innerText = "Recherche du signal GPS...";
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
+                    
+                    fetch(url)
+                        .then(res => res.json())
+                        .then(data => {
+                            let adressePrecise = data.address.suburb || data.address.neighbourhood || data.address.road || data.address.city || "Adresse précise trouvée";
+                            let ville = data.address.city || data.address.town || data.address.state || "";
+                            let affichageFinal = adressePrecise + (ville ? ", " + ville : "");
+                            
+                            displayLoc.innerText = affichageFinal;
+                            displayLoc.style.color = "#10B981"; 
+                            btnUpdate.innerText = "Position validée ✓";
+                            btnUpdate.style.color = "#94A3B8";
+                            btnUpdate.style.textDecoration = "none";
+                            inputLoc.value = "[GPS] " + affichageFinal;
+                        })
+                        .catch(() => {
+                            displayLoc.innerText = `GPS (Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)})`;
+                            inputLoc.value = `[GPS] Lat: ${lat}, Lon: ${lon}`;
+                        });
+                },
+                function() {
+                    alert("Accès GPS refusé ou signal faible.");
+                    displayLoc.innerText = "Échec de la mise à jour.";
+                },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            );
+        });
+    }
+
+    /* --- SIDEBAR & MENU --- */
     const hamburgerBtn = document.getElementById("hamburger-btn");
     const menuOverlay = document.getElementById("menu-overlay");
     const sidebarMenu = document.getElementById("sidebar-menu");
@@ -35,11 +96,43 @@ document.addEventListener("DOMContentLoaded", () => {
     sidebarCloseBtn.addEventListener("click", closeSidebar);
     menuOverlay.addEventListener("click", closeSidebar);
 
+    /* --- CLUSTERISATION DYNAMIQUE (STATUTS) --- */
+    const statutSelect = document.getElementById('statut_entite');
+    const sousStatutContainer = document.getElementById('sous_statut_container');
+    const sousStatutSelect = document.getElementById('sous_statut');
+
+    const sousStatutsMap = {
+        "Institutions religieuses": ["Paroisse", "Diocèse", "Département jeunesse", "Communauté", "Autre"],
+        "Entreprises": ["Entreprise individuelle", "TPE", "PME", "Grande entreprise (SA)", "Autre"],
+        "Organisations éducatives": ["École primaire/collège", "Lycée", "Université / Institut supérieur", "Centre de formation", "Autre"],
+        "ONG": ["Locale", "Internationale", "Fondation", "Autre"],
+        "Associations": ["Sportive", "Culturelle", "Caritative", "Autre"]
+    };
+
+    statutSelect.addEventListener('change', (e) => {
+        const val = e.target.value;
+        sousStatutSelect.innerHTML = '<option value="" disabled selected></option>';
+        if(sousStatutsMap[val]) {
+            sousStatutsMap[val].forEach(opt => {
+                sousStatutSelect.innerHTML += `<option value="${opt}">${opt}</option>`;
+            });
+            sousStatutContainer.classList.remove('hidden');
+            sousStatutSelect.setAttribute('required', 'required');
+            sousStatutSelect.classList.add('required-field');
+        } else {
+            sousStatutContainer.classList.add('hidden');
+            sousStatutSelect.removeAttribute('required');
+            sousStatutSelect.classList.remove('required-field');
+            sousStatutSelect.value = "";
+        }
+    });
+
     /* --- SYSTÈME DYNAMIQUE POUR LES OPTIONS "AUTRE" --- */
     document.querySelectorAll(".data-autre-trigger").forEach(selectElement => {
         selectElement.addEventListener("change", (e) => {
             const container = e.target.closest(".form-field");
             const subContainer = container.querySelector(".input-autre-container");
+            if(!subContainer) return;
             const subInputField = subContainer.querySelector(".input-autre-field");
 
             if (e.target.value === "Autre") {
@@ -57,6 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".option-autre-checkbox").forEach(checkboxElement => {
         const groupContainer = checkboxElement.closest(".options-stack");
         const subContainer = groupContainer.querySelector(".input-autre-container");
+        if(!subContainer) return;
         const subInputField = subContainer.querySelector(".input-autre-field");
 
         groupContainer.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(inputItem => {
@@ -73,39 +167,39 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    /* --- GESTION DU RÉCAPITULATIF (ÉTAPE 10) --- */
+    /* --- GESTION DU RÉCAPITULATIF (ÉTAPE 7) --- */
     function generateSummary() {
         const summaryContainer = document.getElementById('summary-container');
         summaryContainer.innerHTML = '';
         const formData = new FormData(appForm);
         
-        // Dictionnaire des questions
         const labels = {
-            nom_eglise: "Nom de l'église / paroisse", sous_entite: "Sous-entité", nom_responsable: "Nom du responsable",
-            fonction: "Fonction", fonction_autre: "Fonction (Précision)", telephone: "Téléphone", email: "Email",
-            ville: "Ville / Quartier", ville_autre: "Ville (Précision)", nb_participants: "Nombre moyen de participants",
-            frequence: "Fréquence des événements", frequence_autre: "Fréquence (Précision)", vente_billets: "Vente de billets",
-            vente_billets_autre: "Vente de billets (Précision)", type_evenement: "Type d'événement", prix_moyen: "Prix moyen du billet",
+            statut_entite: "Statut", statut_autre: "Statut (Précision)", sous_statut: "Sous-statut", sous_statut_autre: "Sous-statut (Précision)",
+            nom_entite: "Nom de l'entité", sous_entite: "Département", nom_prenom: "Nom et Prénom",
+            fonction: "Fonction", fonction_autre: "Fonction (Précision)", telephone: "Téléphone", email: "Email professionnel",
+            diagnostic_priorite: "Priorité absolue (One-Thing)", diagnostic_priorite_autre: "Priorité (Précision)",
+            historique_tentative: "Tentatives de résolution passées", element_intouchable: "Élément intouchable", element_intouchable_autre: "Intouchable (Précision)",
+            blocage_interne: "Blocage interne principal", blocage_interne_autre: "Blocage (Précision)", mesure_resultats: "Qualification des résultats",
+            nb_participants: "Participants moyens", frequence: "Fréquence des événements", frequence_autre: "Fréquence (Précision)", 
+            type_evenement: "Type d'événement", type_evenement_autre: "Type (Précision)", vente_billets: "Distribution de billets", vente_billets_autre: "Distribution (Précision)",
             problemes_billetterie: "Problèmes billetterie", problemes_billetterie_autre: "Problèmes billetterie (Précision)",
-            controle_entrees: "Contrôle des entrées", controle_entrees_autre: "Contrôle des entrées (Précision)",
-            internet: "Connexion Internet", membres_entrees: "Membres mobilisables", com_avant: "Communication avant l'événement",
-            com_avant_autre: "Communication (Précision)", difficulte_com: "Difficultés de communication", difficulte_com_autre: "Difficultés de com. (Précision)",
-            bilan: "Bilan après événement", bilan_autre: "Bilan (Précision)", outils: "Outils de travail", outils_autre: "Outils (Précision)",
-            plannings: "Gestion des plannings", plannings_autre: "Gestion des plannings (Précision)", procedures: "Procédures et checklists",
-            procedures_autre: "Procédures (Précision)", archivage: "Archivage", archivage_autre: "Archivage (Précision)",
-            difficultes_actuelles: "Difficultés actuelles", difficultes_actuelles_autre: "Difficultés (Précision)", objectif: "Objectif avec Eventnex",
-            objectif_autre: "Objectif (Précision)", lieu_demo: "Lieu de la démonstration", disponibilites: "Disponibilités",
-            accompagnement: "Accompagnement souhaité", commentaires: "Commentaires"
+            controle_entrees: "Contrôle à l'entrée", controle_entrees_autre: "Contrôle (Précision)",
+            com_avant: "Communication avant l'événement", com_avant_autre: "Communication (Précision)", 
+            difficulte_com: "Faille de communication", difficulte_com_autre: "Faille de com. (Précision)",
+            bilan: "Reddition des comptes", bilan_autre: "Bilan (Précision)", outils: "Outils structurels", outils_autre: "Outils (Précision)",
+            plannings: "Gestion des équipes", plannings_autre: "Gestion des équipes (Précision)", procedures: "Protocoles documentés",
+            archivage: "Archivage / Mémoire", archivage_autre: "Archivage (Précision)", objectif: "Objectif avec Eventnex", objectif_autre: "Objectif (Précision)", 
+            date_demo: "Date de la démo", heure_demo: "Heure de la démo", commentaires: "Contexte additionnel"
         };
 
         const dataMap = new Map();
         for (const [key, value] of formData.entries()) {
-            if (!value || key === 'consentement') continue;
+            if (!value || key === 'consentement' || key === 'ip_address' || key === 'localisation_finale') continue;
             const cleanKey = key.replace('[]', '');
             if (dataMap.has(cleanKey)) {
                 dataMap.set(cleanKey, dataMap.get(cleanKey) + ', ' + value);
             } else {
-                dataMap.set(cleanKey, value);
+                dataMap.set(cleanKey, key === 'telephone' ? '+221 ' + value : value);
             }
         }
 
@@ -129,7 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /* --- LOGIQUE MULTI-ÉTAPES ET MOTEUR DE VALIDATION --- */
     let activeStepIndex = 1;
-    const finalStepIndex = 10; // Passé à 10
+    const finalStepIndex = 7;
 
     const prevBtn = document.getElementById("prev-step-btn");
     const nextBtn = document.getElementById("next-step-btn");
@@ -153,41 +247,52 @@ document.addEventListener("DOMContentLoaded", () => {
     function executeScrollToTop() { window.scrollTo({ top: 0, behavior: "smooth" }); }
 
     function checkStepValidation() {
-        if(activeStepIndex === finalStepIndex) return true; // Pas de validation sur le récapitulatif
+        if(activeStepIndex === finalStepIndex) return true;
 
         const currentStepDOM = document.querySelector(`.form-step[data-step="${activeStepIndex}"]`);
         let stepIsValid = true;
 
         currentStepDOM.querySelectorAll(".field-error-message").forEach(msg => msg.remove());
 
-        // 1. Validation des champs standards
+        // 1. Validation Standard
         const standardInputs = currentStepDOM.querySelectorAll(".required-field, .input-autre-field[required]");
         standardInputs.forEach(input => {
-            if (!input.value.trim()) {
+            if (!input.value.trim() && !input.closest('.hidden')) {
                 stepIsValid = false;
-                appendValidationError(input.closest(".form-field"), "Ce champ est requis.");
+                appendValidationError(input.closest(".form-field"), "Ce paramètre est requis.");
             }
         });
 
-        // 2. Validation spécifique du numéro de téléphone (Oblige le "+")
+        // 2. Validation Numéro Sénégal (9 chiffres)
         const phoneInput = currentStepDOM.querySelector('input[type="tel"]');
         if (phoneInput && phoneInput.value.trim() !== "") {
-            // Cette règle (Regex) impose un "+" suivi de 6 à 20 chiffres ou espaces
-            const phoneRegex = /^\+[0-9\s\-\.]{6,20}$/;
-            if (!phoneRegex.test(phoneInput.value.trim())) {
+            const phoneClean = phoneInput.value.replace(/\s+/g, '');
+            if (!/^[0-9]{9}$/.test(phoneClean)) {
                 stepIsValid = false;
-                appendValidationError(phoneInput.closest(".form-field"), "Le numéro doit obligatoirement commencer par '+' suivi de l'indicatif.");
+                appendValidationError(phoneInput.closest(".form-field"), "Le format est incorrect (9 chiffres attendus sans l'indicatif).");
             }
         }
 
-        // 3. Validation des groupes d'options (Radio / Checkbox)
+        // 3. Validation Horaires (16:00 - 21:30)
+        const timeInput = currentStepDOM.querySelector('input[type="time"]');
+        if (timeInput && timeInput.value.trim() !== "") {
+            const t = timeInput.value;
+            if(t < "16:00" || t > "21:30") {
+                stepIsValid = false;
+                appendValidationError(timeInput.closest(".form-field"), "L'heure doit être comprise entre 16:00 et 21:30.");
+            }
+        }
+
+        // 4. Validation Groupes (Radio/Check)
         const mandatoryChoiceGroups = currentStepDOM.querySelectorAll(".choice-group-required");
         mandatoryChoiceGroups.forEach(group => {
-            const options = group.querySelectorAll('input[type="radio"], input[type="checkbox"]');
-            const hasSelection = Array.from(options).some(opt => opt.checked);
-            if (!hasSelection) {
-                stepIsValid = false;
-                appendValidationError(group, "Veuillez sélectionner au moins une option.");
+            if(!group.classList.contains('hidden')) {
+                const options = group.querySelectorAll('input[type="radio"], input[type="checkbox"]');
+                const hasSelection = Array.from(options).some(opt => opt.checked);
+                if (!hasSelection) {
+                    stepIsValid = false;
+                    appendValidationError(group, "Veuillez sélectionner au moins un paramètre.");
+                }
             }
         });
 
@@ -210,9 +315,7 @@ document.addEventListener("DOMContentLoaded", () => {
             activeStepIndex++;
             document.querySelector(`.form-step[data-step="${activeStepIndex}"]`).classList.add("active");
             
-            if(activeStepIndex === finalStepIndex) {
-                generateSummary(); // Génère le texte quand on arrive à l'étape 10
-            }
+            if(activeStepIndex === finalStepIndex) generateSummary();
 
             refreshNavigationControls();
             executeScrollToTop();
@@ -228,7 +331,7 @@ document.addEventListener("DOMContentLoaded", () => {
         executeScrollToTop();
     });
 
-    /* --- PROCESSUS DE SOUMISSION VIA APPS SCRIPT --- */
+    /* --- TRANSMISSION BACKEND --- */
     appForm.addEventListener("submit", function(e) {
         e.preventDefault();
 
@@ -272,8 +375,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }, 1000);
         })
         .catch((err) => {
-            alert("Une erreur de communication est survenue. Veuillez valider votre connexion.");
-            console.error("Transmission Failure:", err);
+            alert("Erreur réseau. Impossible de contacter le serveur d'orchestration.");
         });
     });
 });
