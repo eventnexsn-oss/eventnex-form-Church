@@ -7,8 +7,10 @@
     --text-muted: #8e8e8e;
     --border-light: #e5e5e5;
     --accent-error: #ca2121;
-    --emerald: #10B981;
-    --navy: #1E293B;
+    /* … autres variables … */
+    --navy:          #000000;      /* noir pour fond de localisation (non utilisé) */
+    --emerald:       #000000;      /* noir pour texte et bordure de localisation (non utilisé) */
+    --location-text: #ffffff;      /* blanc pour le texte de localisation (non utilisé) */
     --font-stack: 'JetBrains Mono', monospace;
 }
 
@@ -25,20 +27,20 @@ body {
 
 /* --- UI LOCALISATION GOTHAM STYLE --- */
 .location-ui {
-    background: var(--navy);
+    background: var(--bg-main);
     padding: 15px 20px;
     border-radius: 8px;
-    border-left: 4px solid var(--emerald);
-    color: #F1F5F9;
+    border-left: 4px solid var(--text-primary);
+    color: var(--text-primary);
     font-family: 'Inter', sans-serif;
     margin-bottom: 3rem;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
-.location-icon { color: var(--emerald); font-size: 20px; width: 25px; text-align: center; }
+.location-icon { color: var(--text-primary); font-size: 20px; width: 25px; text-align: center; }
 .location-text { font-weight: 600; font-size: 0.95rem; }
-.location-subtext { font-size: 0.75rem; color: #94A3B8; }
-.location-btn { margin-top: 12px; background: none; border: none; color: #38BDF8; cursor: pointer; font-size: 0.85rem; text-decoration: underline; padding: 0; display: inline-block; font-family: 'Inter', sans-serif;}
-.location-btn:hover { color: #7DD3FC; }
+.location-subtext { font-size: 0.75rem; color: var(--text-muted); }
+.location-btn { margin-top: 12px; background: none; border: none; color: var(--text-primary); cursor: pointer; font-size: 0.85rem; text-decoration: underline; padding: 0; display: inline-block; font-family: 'Inter', sans-serif;}
+.location-btn:hover { color: var(--text-muted); }
 
 /* --- INTERFACE DE HAUT DE PAGE & NAVIGATION --- */
 header { display: flex; justify-content: space-between; align-items: center; padding: 2.5rem 4rem; position: absolute; top: 0; left: 0; width: 100%; z-index: 50; }
