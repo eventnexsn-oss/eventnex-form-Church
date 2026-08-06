@@ -107,7 +107,7 @@
         testBtn.addEventListener('click', function() {
             const validation = validateSenegalPhone(phoneInput.value);
             resultDiv.innerHTML = `
-                <strong>Validation Result:</strong> ${validation.valid ? '✅ VALID' : '❌ INVALID'}<br>
+                <strong>Validation Result:</strong> ${validation.valid ? 'VALID' : '❌INVALID'}<br>
                 ${validation.message ? validation.message : 'Senegalese phone number accepted!'}
             `;
             resultDiv.style.color = validation.valid ? 'green' : 'red';

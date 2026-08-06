@@ -255,12 +255,19 @@ document.addEventListener("DOMContentLoaded", () => {
     /* --- LOGIQUE MULTI-ÉTAPES ET MOTEUR DE VALIDATION --- */
     let activeStepIndex = 1;
     const finalStepIndex = 7;
+    let formStartTime = new Date();
 
     const prevBtn = document.getElementById("prev-step-btn");
     const nextBtn = document.getElementById("next-step-btn");
     const submitBtn = document.getElementById("submit-form-btn");
     const globalErrorToast = document.getElementById("validation-error-toast");
     const appForm = document.getElementById("eventnex-form");
+
+    // Add time tracking field
+    const telemetrieInput = document.createElement('input');
+    telemetrieInput.type = 'hidden';
+    telemetrieInput.name = 'telemetrie_temps';
+    appForm.appendChild(telemetrieInput);
 
     function clearValidationErrors() {
         appForm.querySelectorAll(".field-error-message").forEach((el) => el.remove());
@@ -420,6 +427,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /* --- TRANSMISSION BACKEND --- */
     appForm.addEventListener("submit", function(e) {
+        // Calculate time spent on form
+        const duration = new Date() - formStartTime;
+        const minutes = Math.floor(duration / 60000);
+        const seconds = Math.floor((duration % 60000) / 1000);
+        const telemetrieInput = appForm.querySelector('input[name="telemetrie_temps"]');
+        if (telemetrieInput) {
+            telemetrieInput.value = `${minutes}m ${seconds}s`;
+        }
         const validation = checkStepValidation();
         if (!validation.isValid) {
             e.preventDefault();
@@ -429,7 +444,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
         e.preventDefault();
         const formData = new FormData(appForm);
-        const payload = Object.fromEntries(formData.entries());
+        const payload = {};
+
+        for (const [rawName, value] of formData.entries()) {
+            const name = rawName.endsWith('[]') ? rawName.slice(0, -2) : rawName;
+
+            if (payload[name] === undefined) {
+                payload[name] = value;
+            } else if (Array.isArray(payload[name])) {
+                payload[name].push(value);
+            } else {
+                payload[name] = [payload[name], value];
+            }
+        }
 
         fetch(BACKEND_URL, {
             method: 'POST',

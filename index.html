@@ -429,9 +429,23 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="form-field choice-group-required">
-                        <label class="field-label">27. Votre macro-objectif avec l'architecture Eventnex : <span class="field-desc">(Plusieurs choix)</span> <span class="required-star">*</span></label>
+                        <label class="field-label">24. Intégrations/conformité : <span class="field-desc">(Plusieurs choix)</span> <span class="required-star">*</span></label>
+                        <div class="options-stack">
+                            <label><input type="checkbox" name="integrations[]" value="Connexion à un CRM existant"> Connexion à un CRM existant</label>
+                            <label><input type="checkbox" name="integrations[]" value="Exigences RGPD spécifiques (hébergement, DPA)"> Exigences RGPD spécifiques (hébergement, DPA)</label>
+                            <label><input type="checkbox" name="integrations[]" value="Authentification unique (SSO)"> Authentification unique (SSO)</label>
+                            <label><input type="checkbox" name="integrations[]" value="Aucune contrainte particulière"> Aucune contrainte particulière</label>
+                            <label><input type="checkbox" name="integrations[]" value="Autre" class="option-autre-checkbox"> Autre</label>
+                            <div class="input-autre-container hidden">
+                                <input type="text" name="integrations_autre" class="input-text input-autre-field" placeholder="Veuillez préciser">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-field choice-group-required">
+                        <label class="field-label">25. Votre macro-objectif avec l'architecture Eventnex : <span class="field-desc">(Plusieurs choix)</span> <span class="required-star">*</span></label>
                         <div class="options-stack">
                             <label><input type="checkbox" name="objectif[]" value="Automatiser pour diviser le temps de préparation par deux"> Automatiser pour diviser le temps de préparation par deux</label>
                             <label><input type="checkbox" name="objectif[]" value="Sécuriser les recettes financières à 100%"> Sécuriser les recettes financières à 100%</label>

@@ -125,6 +125,7 @@ try:
     check_option("plannings[]", "Attribution informelle (à l'oral)")
     check_option("procedures", "Gestion de crise au fur et à mesure")
     check_option("archivage[]", "Aucune mémoire conservée")
+    check_option("integrations[]", "Connexion à un CRM existant")
     check_option("objectif[]", "Sécuriser les recettes financières à 100%")
     click_next()
 
