@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Phone Validation</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-case { margin: 10px 0; padding: 10px; border: 1px solid #ddd; }
+        .valid { background-color: #d4edda; }
+        .invalid { background-color: #f8d7da; }
+        .phone-wrapper { display: flex; align-items: center; }
+        .phone-prefix { margin-right: 10px; color: #666; }
+        input { padding: 8px; border: 1px solid #ccc; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>Test Senegalese Phone Validation</h1>
+
+    <div class="test-case">
+        <h3>Test Form</h3>
+        <div class="phone-wrapper">
+            <span class="phone-prefix">+221</span>
+            <input type="tel" id="phoneInput" placeholder="768643920">
+        </div>
+        <button id="testBtn">Validate</button>
+        <div id="result"></div>
+    </div>
+
+    <h2>Test Cases:</h2>
+    <div id="testCases"></div>
+
+    <script>
+        // Copy the validation function from our implementation
+        function validateSenegalPhone(phoneNumber) {
+            // Remove any spaces or formatting characters
+            const cleaned = phoneNumber.replace(/\s+/g, '');
+
+            // Must be exactly 9 digits
+            if (!/^\d{9}$/.test(cleaned)) {
+                return { valid: false, message: "Le numéro doit comporter exactement 9 chiffres sans espaces ni tirets." };
+            }
+
+            // Must start with valid Senegalese prefixes
+            const validPrefixes = ['33', '70', '75', '76', '77', '78'];
+            const prefix = cleaned.substring(0, 2);
+
+            if (!validPrefixes.includes(prefix)) {
+                return { valid: false, message: "Le numéro doit commencer par 33, 70, 75, 76, 77 ou 78 (numéros sénégalais uniquement)." };
+            }
+
+            // Check if user tried to enter French number (+33 removed but starts with 7)
+            if (phoneNumber.includes('+33') || phoneNumber.includes('33') && !cleaned.startsWith('33')) {
+                return { valid: false, message: "Les numéros français (+33) ne sont pas acceptés. Veuillez entrer un numéro sénégalais." };
+            }
+
+            return { valid: true, message: "" };
+        }
+
+        // Test cases
+        const testCases = [
+            { phone: "768643920", expected: true, description: "Valid Senegalese number (76 prefix)" },
+            { phone: "786543456", expected: true, description: "Valid Senegalese number (78 prefix)" },
+            { phone: "338675443", expected: true, description: "Valid Senegalese number (33 prefix)" },
+            { phone: "771234567", expected: true, description: "Valid Senegalese number (77 prefix)" },
+            { phone: "759606459", expected: true, description: "Valid Senegalese number (75 prefix)" },
+            { phone: "701234567", expected: true, description: "Valid Senegalese number (70 prefix)" },
+            { phone: "+33759606459", expected: false, description: "French number with +33" },
+            { phone: "33759606459", expected: false, description: "French number without +33 but starts with 33" },
+            { phone: "77 123 45 67", expected: false, description: "Valid number but with spaces" },
+            { phone: "12345678", expected: false, description: "Invalid prefix (12)" },
+            { phone: "77123456", expected: false, description: "Too short (7 digits)" },
+            { phone: "77123456789", expected: false, description: "Too long (10 digits)" },
+            { phone: "", expected: false, description: "Empty" }
+        ];
+
+        // Run tests
+        const testCasesDiv = document.getElementById('testCases');
+        testCases.forEach(test => {
+            const result = validateSenegalPhone(test.phone);
+            const passed = result.valid === test.expected;
+
+            const caseDiv = document.createElement('div');
+            caseDiv.className = `test-case ${passed ? 'valid' : 'invalid'}`;
+            caseDiv.innerHTML = `
+                <strong>${test.description}</strong><br>
+                Phone: "${test.phone}"<br>
+                Expected: ${test.expected ? 'Valid' : 'Invalid'}<br>
+                Result: ${result.valid ? 'Valid' : 'Invalid'}${result.message ? ' - ' + result.message : ''}<br>
+                Test: ${passed ? '✅ PASSED' : '❌ FAILED'}
+            `;
+            testCasesDiv.appendChild(caseDiv);
+        });
+
+        // Interactive test
+        const phoneInput = document.getElementById('phoneInput');
+        const testBtn = document.getElementById('testBtn');
+        const resultDiv = document.getElementById('result');
+
+        phoneInput.addEventListener('input', function() {
+            // Remove non-digit characters
+            this.value = this.value.replace(/\D/g, '');
+        });
+
+        testBtn.addEventListener('click', function() {
+            const validation = validateSenegalPhone(phoneInput.value);
+            resultDiv.innerHTML = `
+                <strong>Validation Result:</strong> ${validation.valid ? '✅ VALID' : '❌ INVALID'}<br>
+                ${validation.message ? validation.message : 'Senegalese phone number accepted!'}
+            `;
+            resultDiv.style.color = validation.valid ? 'green' : 'red';
+        });
+    </script>
+</body>
+</html>

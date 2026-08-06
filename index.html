@@ -30,7 +30,7 @@
     <main class="app-container">
         
         <section class="left-column">
-            <h1 class="main-title">Préparation<br>Stratégique<br>Eventnex</h1>
+            <h1 class="main-title">Préparation<br>Stratégique<br>Démo-Eventnex</h1>
         </section>
 
         <section class="right-column">
@@ -43,6 +43,22 @@
 
             <form id="eventnex-form" novalidate>
                 
+                <div class="step-progress" aria-label="Progression des étapes" id="step-progress">
+                    <div class="step-progress-item active" data-step="1"><span class="step-pill">0.1</span></div>
+                    <span class="step-sep"></span>
+                    <div class="step-progress-item" data-step="2"><span class="step-pill">0.2</span></div>
+                    <span class="step-sep"></span>
+                    <div class="step-progress-item" data-step="3"><span class="step-pill">0.3</span></div>
+                    <span class="step-sep"></span>
+                    <div class="step-progress-item" data-step="4"><span class="step-pill">0.4</span></div>
+                    <span class="step-sep"></span>
+                    <div class="step-progress-item" data-step="5"><span class="step-pill">0.5</span></div>
+                    <span class="step-sep"></span>
+                    <div class="step-progress-item" data-step="6"><span class="step-pill">0.6</span></div>
+                    <span class="step-sep"></span>
+                    <div class="step-progress-item" data-step="7"><span class="step-pill">0.7</span></div>
+                </div>
+
                 <div class="location-ui">
                     <div style="display: flex; align-items: center; gap: 12px;">
                         <i class="fa-solid fa-location-dot location-icon"></i>
@@ -86,6 +102,17 @@
                         </div>
                     </div>
 
+                    <div class="form-field select-wrapper hidden" id="taille_organisation_container">
+                        <label class="field-label">2.1 Taille de votre organisation</label>
+                        <select name="taille_organisation" id="taille_organisation" class="input-select">
+                            <option value="" disabled selected></option>
+                            <option value="1-10">1-10 collaborateurs</option>
+                            <option value="11-50">11-50 collaborateurs</option>
+                            <option value="51-250">51-250 collaborateurs</option>
+                            <option value="250+">250+ collaborateurs</option>
+                        </select>
+                    </div>
+
                     <div class="form-field">
                         <label class="field-label">3. Nom de l'entité <span class="required-star">*</span></label>
                         <input type="text" name="nom_entite" class="input-text required-field">
@@ -120,7 +147,7 @@
                         <label class="field-label">7. Téléphone <span class="required-star">*</span></label>
                         <div class="phone-wrapper">
                             <span class="phone-prefix">+221</span>
-                            <input type="tel" name="telephone" class="input-text required-field phone-input" placeholder="77 123 45 67">
+                            <input type="tel" name="telephone" class="input-text required-field phone-input" placeholder="768643920">
                         </div>
                     </div>
 
@@ -190,6 +217,34 @@
                             <label><input type="radio" name="mesure_resultats" value="Médiocres (Beaucoup de frictions et de stress)"> Médiocres (Beaucoup de frictions et de stress)</label>
                             <label><input type="radio" name="mesure_resultats" value="Moyens (On survit mais sans optimiser)"> Moyens (On survit mais sans optimiser)</label>
                             <label><input type="radio" name="mesure_resultats" value="Corrects (Mais nous voulons passer au niveau supérieur)"> Corrects (Mais nous voulons passer au niveau supérieur)</label>
+                        </div>
+                    </div>
+
+                    <div class="form-field choice-group-required">
+                        <label class="field-label">14. Quel est votre budget indicatif pour une solution événementielle ? <span class="required-star">*</span></label>
+                        <div class="options-stack">
+                            <label><input type="radio" name="budget" value="Moins de 100 000 FCFA/An"> Moins de 100 000 FCFA/An</label>
+                            <label><input type="radio" name="budget" value="100 000 - 500 000 FCFA/An"> 100 000 - 500 000 FCFA/An</label>
+                            <label><input type="radio" name="budget" value="500 000 - 1 000 000 FCFA/An"> 500 000 - 1 000 000 FCFA/An</label>
+                            <label><input type="radio" name="budget" value="Plus de 1 000 000 FCFA/An"> Plus de 1 000 000 FCFA/An</label>
+                            <label><input type="radio" name="budget" value="Autre" class="option-autre-checkbox"> Autre</label>
+                            <div class="input-autre-container hidden">
+                                <input type="text" name="budget_autre" class="input-text input-autre-field" placeholder="Veuillez préciser votre budget">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-field choice-group-required">
+                        <label class="field-label">15. Qui d'autre est impliqué dans la décision ? <span class="required-star">*</span></label>
+                        <div class="options-stack">
+                            <label><input type="checkbox" name="decideurs[]" value="Je décide seul(e)"> Je décide seul(e)</label>
+                            <label><input type="checkbox" name="decideurs[]" value="Direction / Comité de direction"> Direction / Comité de direction</label>
+                            <label><input type="checkbox" name="decideurs[]" value="Service achats"> Service achats</label>
+                            <label><input type="checkbox" name="decideurs[]" value="Service IT / Sécurité"> Service IT / Sécurité</label>
+                            <label><input type="checkbox" name="decideurs[]" value="Autre" class="option-autre-checkbox"> Autre</label>
+                            <div class="input-autre-container hidden">
+                                <input type="text" name="decideurs_autre" class="input-text input-autre-field" placeholder="Veuillez préciser">
+                            </div>
                         </div>
                     </div>
                 </div>

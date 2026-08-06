@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    // RENSEIGNEZ VOTRE URL DE DÉPLOIEMENT GOOGLE APPS SCRIPT ICI (Orchestrateur CRM)
-    const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyeLQum6GHCey7c0Ak1vCCS9jlW7Rc5UDW9Nzt6QnQHCO1bpCl1F69P31mZVE_4hzvKdg/exec";
+    // Endpoint backend local / Netlify Function
+    const BACKEND_URL = "/.netlify/functions/submitForm";
 
     /* --- MODULE DE LOCALISATION & GPS --- */
     const displayLoc = document.getElementById('display_location');
@@ -127,6 +127,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    // Show organization size question when sous_statut is completed
+    const tailleOrganisationContainer = document.getElementById('taille_organisation_container');
+    if (sousStatutSelect && tailleOrganisationContainer) {
+        sousStatutSelect.addEventListener('change', (e) => {
+            if (e.target.value) {
+                tailleOrganisationContainer.classList.remove('hidden');
+            } else {
+                tailleOrganisationContainer.classList.add('hidden');
+            }
+        });
+    }
+
     /* --- SYSTÈME DYNAMIQUE POUR LES OPTIONS "AUTRE" --- */
     document.querySelectorAll(".data-autre-trigger").forEach(selectElement => {
         selectElement.addEventListener("change", (e) => {
@@ -167,9 +179,77 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    /* --- VALIDATION TELEPHONE EN TEMPS REEL --- */
+    const phoneInput = document.querySelector('input[name="telephone"]');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function() {
+            // Remove any non-digit characters as user types
+            this.value = this.value.replace(/\D/g, '');
+
+            // Clear previous phone-specific errors
+            const container = this.closest('.form-field');
+            if (container) {
+                const existingError = container.querySelector('.field-error-message');
+                if (existingError && existingError.textContent.includes('numéro')) {
+                    existingError.remove();
+                    container.classList.remove('field-error-highlight');
+                }
+            }
+        });
+
+        phoneInput.addEventListener('blur', function() {
+            if (this.value.trim() === '') return;
+
+            const validation = validateSenegalPhone(this.value);
+            const container = this.closest('.form-field');
+            const existingError = container.querySelector('.field-error-message');
+
+            // Remove any existing phone error
+            if (existingError && existingError.textContent.includes('numéro')) {
+                existingError.remove();
+            }
+
+            if (!validation.valid) {
+                container.classList.add('field-error-highlight');
+                const message = document.createElement('div');
+                message.className = 'field-error-message';
+                message.textContent = validation.message;
+                container.appendChild(message);
+            } else {
+                container.classList.remove('field-error-highlight');
+            }
+        });
+    }
+
     /* --- GESTION DU RÉCAPITULATIF (ÉTAPE 7) --- */
     function generateSummary() {
-        // ... reste du code ...
+        const summaryContainer = document.getElementById("summary-container");
+        if (!summaryContainer) return;
+
+        const summaryItems = [];
+        const labels = {
+            statut_entite: "Statut de l'organisation",
+            sous_statut: "Précisez votre statut",
+            nom_entite: "Nom de l'entité",
+            sous_entite: "Sous-entité / Département",
+            nom_prenom: "Nom et prénom",
+            fonction: "Fonction",
+            telephone: "Téléphone",
+            email: "Email professionnel"
+        };
+
+        Array.from(appForm.elements).forEach((field) => {
+            if (!field.name || field.type === "hidden" || field.type === "button" || field.type === "submit") return;
+            if ((field.type === "radio" || field.type === "checkbox") && !field.checked) return;
+            if ((field.type === "text" || field.type === "email" || field.type === "tel" || field.type === "date" || field.type === "time" || field.type === "textarea" || field.tagName === "SELECT") && field.value.trim() === "") return;
+
+            const label = labels[field.name] || field.name.replace(/_/g, " ");
+            summaryItems.push(`<div class="summary-item"><div class="summary-question">${label}</div><div class="summary-answer">${field.value}</div></div>`);
+        });
+
+        summaryContainer.innerHTML = summaryItems.length > 0
+            ? summaryItems.join("")
+            : "<p class='summary-answer'>Aucune donnée saisie pour le moment.</p>";
     }
 
     /* --- LOGIQUE MULTI-ÉTAPES ET MOTEUR DE VALIDATION --- */
@@ -182,30 +262,218 @@ document.addEventListener("DOMContentLoaded", () => {
     const globalErrorToast = document.getElementById("validation-error-toast");
     const appForm = document.getElementById("eventnex-form");
 
+    function clearValidationErrors() {
+        appForm.querySelectorAll(".field-error-message").forEach((el) => el.remove());
+        appForm.querySelectorAll(".field-error-highlight").forEach((el) => el.classList.remove("field-error-highlight"));
+    }
+
     function refreshNavigationControls() {
-        // ... reste du code ...
+        prevBtn.classList.toggle("invisible", activeStepIndex === 1);
+        nextBtn.classList.toggle("hidden", activeStepIndex === finalStepIndex);
+        submitBtn.classList.toggle("hidden", activeStepIndex !== finalStepIndex);
     }
 
     function executeScrollToTop() { window.scrollTo({ top: 0, behavior: "smooth" }); }
 
-    function checkStepValidation() {
-        // ... reste du code ...
+    function isFieldVisible(field) {
+        if (!field) return false;
+        const container = field.closest(".form-field");
+        if (container && container.classList.contains("hidden")) return false;
+        return field.offsetParent !== null || field.getClientRects().length > 0;
     }
 
-    function appendValidationError(targetElement, messageText) {
-        // ... reste du code ...
+    function validateSenegalPhone(phoneNumber) {
+        // Remove any spaces or formatting characters
+        const cleaned = phoneNumber.replace(/\s+/g, '');
+
+        // Must be exactly 9 digits
+        if (!/^\d{9}$/.test(cleaned)) {
+            return { valid: false, message: "Le numéro doit comporter exactement 9 chiffres sans espaces ni tirets." };
+        }
+
+        // Must start with valid Senegalese prefixes
+        const validPrefixes = ['33', '70', '75', '76', '77', '78'];
+        const prefix = cleaned.substring(0, 2);
+
+        if (!validPrefixes.includes(prefix)) {
+            return { valid: false, message: "Le numéro doit commencer par 33, 70, 75, 76, 77 ou 78 (numéros sénégalais uniquement)." };
+        }
+
+        // Check if user tried to enter French number (+33 removed but starts with 7)
+        if (phoneNumber.includes('+33') || phoneNumber.includes('33') && !cleaned.startsWith('33')) {
+            return { valid: false, message: "Les numéros français (+33) ne sont pas acceptés. Veuillez entrer un numéro sénégalais." };
+        }
+
+        return { valid: true, message: "" };
+    }
+
+    function checkStepValidation() {
+        clearValidationErrors();
+        const activeStep = document.querySelector(".form-step.active");
+        const invalidElements = [];
+        const errors = [];
+
+        if (!activeStep) return { isValid: true, invalidElements, errors };
+
+        activeStep.querySelectorAll(".choice-group-required").forEach((group) => {
+            const inputs = Array.from(group.querySelectorAll('input[type="radio"], input[type="checkbox"]'));
+            const hasSelection = inputs.some((field) => field.checked);
+
+            if (!hasSelection) {
+                invalidElements.push(group);
+                errors.push("Veuillez sélectionner une option.");
+                group.classList.add("field-error-highlight");
+                const message = document.createElement("div");
+                message.className = "field-error-message";
+                message.textContent = "Veuillez sélectionner une option.";
+                group.appendChild(message);
+            }
+        });
+
+        activeStep.querySelectorAll("input, select, textarea").forEach((field) => {
+            if (field.type === "hidden" || field.type === "radio" || field.type === "checkbox") return;
+            if (!isFieldVisible(field)) return;
+
+            const isRequired = field.hasAttribute("required") || field.classList.contains("required-field");
+            if (!isRequired) return;
+
+            if (field.value.trim() === "") {
+                invalidElements.push(field);
+                errors.push("Ce champ est obligatoire.");
+                const container = field.closest(".form-field");
+                if (container) {
+                    container.classList.add("field-error-highlight");
+                    const message = document.createElement("div");
+                    message.className = "field-error-message";
+                    message.textContent = "Ce champ est obligatoire.";
+                    container.appendChild(message);
+                }
+            }
+
+            // Special validation for telephone field
+            if (field.name === "telephone" && field.value.trim() !== "") {
+                const validation = validateSenegalPhone(field.value);
+                if (!validation.valid) {
+                    invalidElements.push(field);
+                    errors.push(validation.message);
+                    const container = field.closest(".form-field");
+                    if (container) {
+                        container.classList.add("field-error-highlight");
+                        const message = document.createElement("div");
+                        message.className = "field-error-message";
+                        message.textContent = validation.message;
+                        container.appendChild(message);
+                    }
+                }
+            }
+        });
+
+        activeStep.querySelectorAll(".form-field").forEach((fieldContainer) => {
+            const subInput = fieldContainer.querySelector(".input-autre-field");
+            if (subInput && subInput.hasAttribute("required") && subInput.value.trim() === "") {
+                invalidElements.push(subInput);
+                errors.push("Veuillez préciser cette information.");
+                fieldContainer.classList.add("field-error-highlight");
+                const message = document.createElement("div");
+                message.className = "field-error-message";
+                message.textContent = "Veuillez préciser cette information.";
+                fieldContainer.appendChild(message);
+            }
+        });
+
+        globalErrorToast.style.display = errors.length > 0 ? "block" : "none";
+        return { isValid: errors.length === 0, invalidElements, errors };
+    }
+
+    function setActiveStep(stepIndex) {
+        activeStepIndex = Math.min(finalStepIndex, Math.max(1, stepIndex));
+        document.querySelectorAll(".form-step").forEach((step, index) => {
+            step.classList.toggle("active", index + 1 === activeStepIndex);
+        });
+        document.querySelectorAll(".step-progress-item").forEach((item) => {
+            const stepNumber = Number(item.dataset.step);
+            item.classList.toggle("active", stepNumber === activeStepIndex);
+        });
+        refreshNavigationControls();
+        executeScrollToTop();
+        if (activeStepIndex === finalStepIndex) {
+            generateSummary();
+        }
     }
 
     nextBtn.addEventListener("click", () => {
-        // ... reste du code ...
+        const validation = checkStepValidation();
+        if (!validation.isValid) {
+            executeScrollToTop();
+            return;
+        }
+        if (activeStepIndex < finalStepIndex) {
+            setActiveStep(activeStepIndex + 1);
+        }
     });
 
     prevBtn.addEventListener("click", () => {
-        // ... reste du code ...
+        if (activeStepIndex > 1) {
+            setActiveStep(activeStepIndex - 1);
+        }
     });
 
     /* --- TRANSMISSION BACKEND --- */
     appForm.addEventListener("submit", function(e) {
-        // ... reste du code ...
+        const validation = checkStepValidation();
+        if (!validation.isValid) {
+            e.preventDefault();
+            executeScrollToTop();
+            return;
+        }
+
+        e.preventDefault();
+        const formData = new FormData(appForm);
+        const payload = Object.fromEntries(formData.entries());
+
+        fetch(BACKEND_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(async (response) => {
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || 'Erreur de soumission.');
+            }
+            return response.json();
+        })
+        .then((result) => {
+            if (result.result !== 'success') {
+                throw new Error(result.error || 'Erreur backend.');
+            }
+            const thankYouScreen = document.getElementById('thank-you-screen');
+            const countdownElement = document.getElementById('countdown');
+            const formContainer = document.getElementById('eventnex-form');
+
+            thankYouScreen.classList.remove('hidden');
+            formContainer.classList.add('hidden');
+
+            let countdownValue = 5;
+            countdownElement.textContent = countdownValue;
+
+            const countdownInterval = window.setInterval(() => {
+                countdownValue -= 1;
+                countdownElement.textContent = countdownValue;
+
+                if (countdownValue <= 0) {
+                    window.clearInterval(countdownInterval);
+                    window.location.assign('https://v2.eventnex.cloud/');
+                }
+            }, 1000);
+        })
+        .catch((error) => {
+            console.error('Erreur de soumission:', error);
+            alert('Une erreur est survenue lors de l’envoi du formulaire. Merci de réessayer plus tard.');
+        });
     });
+
+    setActiveStep(1);
 });

@@ -30,11 +30,9 @@ body {
     background: var(--bg-main);
     padding: 15px 20px;
     border-radius: 8px;
-    border-left: 4px solid var(--text-primary);
     color: var(--text-primary);
     font-family: 'Inter', sans-serif;
     margin-bottom: 3rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 .location-icon { color: var(--text-primary); font-size: 20px; width: 25px; text-align: center; }
 .location-text { font-weight: 600; font-size: 0.95rem; }
@@ -62,7 +60,26 @@ header { display: flex; justify-content: space-between; align-items: center; pad
 .app-container { display: flex; min-height: 100vh; padding: 10rem 4rem 12rem 4rem; max-width: 1500px; margin: 0 auto; width: 100%; gap: 8rem; }
 .left-column { flex: 1; max-width: 420px; position: relative; }
 .main-title { font-size: 2.4rem; font-weight: 400; line-height: 1.3; position: fixed; max-width: 420px; }
-.right-column { flex: 1.3; max-width: 580px; position: relative; }
+.right-column { flex: 1.3; max-width: 580px; position: relative; padding-right: 0; }
+
+.step-progress {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    position: fixed;
+    top: 50%;
+    right: 3rem;
+    transform: translateY(-50%);
+    z-index: 60;
+}
+.step-progress-item { display: inline-flex; align-items: center; justify-content: center; }
+.step-sep { display: inline-block; width: 1px; height: 1rem; background: #d8d8d8; }
+.step-progress-item.active + .step-sep { width: 1px; height: 2rem; background: #111111; }
+.step-pill { display: inline-flex; align-items: center; justify-content: center; font-size: 0.95rem; font-weight: 400; color: #b5b5b5; line-height: 1; }
+.step-progress-item.active .step-pill { color: #111111; font-weight: 700; }
+.step-progress-item.active .step-pill::before { content: "["; margin-right: 1px; }
+.step-progress-item.active .step-pill::after { content: "]"; margin-left: 1px; }
 
 /* --- STRUCTURES ET ÉLÉMENTS DES ÉTAPES --- */
 form { width: 100%; }
@@ -109,6 +126,7 @@ form { width: 100%; }
 
 /* Avertissement */
 .field-error-message { color: var(--accent-error); font-size: 0.75rem; margin-top: 0.6rem; display: block; animation: errorFade 0.3s ease forwards; }
+.field-error-highlight { border-left: 3px solid var(--accent-error); padding-left: 0.75rem; }
 @keyframes errorFade { from { opacity: 0; } to { opacity: 1; } }
 
 /* Consentement */
@@ -156,5 +174,5 @@ form { width: 100%; }
 .back-link:hover { color: var(--text-primary); }
 
 /* --- DESIGN RESPONSIVE --- */
-@media (max-width: 1100px) { header { padding: 2rem; } .sidebar-close { right: 2rem; } .app-container { flex-direction: column; padding: 8rem 2rem 8rem 2rem; gap: 4rem; } .left-column, .main-title { position: relative; max-width: 100%; width: 100%; } .right-column { max-width: 100%; width: 100%; } }
+@media (max-width: 1100px) { header { padding: 2rem; } .sidebar-close { right: 2rem; } .app-container { flex-direction: column; padding: 8rem 2rem 8rem 2rem; gap: 4rem; } .left-column, .main-title { position: relative; max-width: 100%; width: 100%; } .right-column { max-width: 100%; width: 100%; } .step-progress { position: static; flex-direction: row; top: auto; right: auto; transform: none; justify-content: flex-start; margin-bottom: 1.8rem; } .step-sep { width: 1.2rem; height: 1px; } .step-progress-item.active + .step-sep { width: 2.4rem; height: 1px; } }
 @media (min-width: 1101px) { body { zoom: 0.9; } }
