@@ -8,6 +8,11 @@ import time
 # --- CONFIGURATION DU NAVIGATEUR ---
 options = webdriver.ChromeOptions()
 options.add_experimental_option("detach", True)
+# Pré-autoriser les permissions de géolocalisation
+options.add_experimental_option("prefs", {
+    "profile.default_content_setting_values.geolocation": 1,  # 1 = autoriser, 2 = bloquer
+    "profile.managed_default_content_settings.geolocation": 1
+})
 driver = webdriver.Chrome(options=options)
 
 driver.get("http://localhost:8888/") 

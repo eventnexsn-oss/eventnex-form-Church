@@ -22,46 +22,58 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .catch(err => console.error("Erreur IP:", err));
 
-    // Détection précise (GPS)
-    if(btnUpdate) {
-        btnUpdate.addEventListener("click", function() {
-            if (!navigator.geolocation) {
-                alert("Géolocalisation non supportée.");
-                return;
-            }
-            displayLoc.innerText = "Recherche du signal GPS...";
-            navigator.geolocation.getCurrentPosition(
-                function(position) {
-                    const lat = position.coords.latitude;
-                    const lon = position.coords.longitude;
-                    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
+    // Détection précise (GPS) - automatique au chargement
+    function requestGPSCoordinates() {
+        if (!navigator.geolocation) {
+            console.log("Géolocalisation non supportée, utilisation de la détection IP seulement.");
+            return;
+        }
 
-                    fetch(url)
-                        .then(res => res.json())
-                        .then(data => {
-                            let adressePrecise = data.address.suburb || data.address.neighbourhood || data.address.road || data.address.city || "Adresse précise trouvée";
-                            let ville = data.address.city || data.address.town || data.address.state || "";
-                            let affichageFinal = adressePrecise + (ville ? ", " + ville : "");
+        displayLoc.innerText = "Recherche du signal GPS...";
 
-                            displayLoc.innerText = affichageFinal;
-                            displayLoc.style.color = ""; // suppression de la couleur en dur
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
+
+                fetch(url)
+                    .then(res => res.json())
+                    .then(data => {
+                        let adressePrecise = data.address.suburb || data.address.neighbourhood || data.address.road || data.address.city || "Adresse précise trouvée";
+                        let ville = data.address.city || data.address.town || data.address.state || "";
+                        let affichageFinal = adressePrecise + (ville ? ", " + ville : "");
+
+                        displayLoc.innerText = affichageFinal;
+                        displayLoc.style.color = ""; // suppression de la couleur en dur
+                        if(btnUpdate) {
                             btnUpdate.innerText = "Position validée ✓";
                             btnUpdate.style.color = ""; // suppression de la couleur en dur
                             btnUpdate.style.textDecoration = "none";
-                            inputLoc.value = "[GPS] " + affichageFinal;
-                        })
-                        .catch(() => {
-                            displayLoc.innerText = `GPS (Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)})`;
-                            inputLoc.value = `[GPS] Lat: ${lat}, Lon: ${lon}`;
-                        });
-                },
-                function() {
-                    alert("Accès GPS refusé ou signal faible.");
-                    displayLoc.innerText = "Échec de la mise à jour.";
-                },
-                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-            );
-        });
+                        }
+                        inputLoc.value = "[GPS] " + affichageFinal;
+                    })
+                    .catch(() => {
+                        displayLoc.innerText = `GPS (Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)})`;
+                        inputLoc.value = `[GPS] Lat: ${lat}, Lon: ${lon}`;
+                    });
+            },
+            function() {
+                console.log("Accès GPS refusé ou signal faible, utilisation de la détection IP.");
+                // Ne pas écraser la détection IP en cas de refus
+                if(displayLoc.innerText.includes("Position approximative")) {
+                    displayLoc.innerText = "Détection IP (GPS refusé)";
+                }
+            },
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        );
+    }
+
+    // Détection précise (GPS) - automatique au chargement
+    if(btnUpdate) {
+        btnUpdate.addEventListener("click", requestGPSCoordinates);
+        // Déclencher automatiquement au chargement
+        requestGPSCoordinates();
     }
 
     /* --- SIDEBAR & MENU --- */
@@ -443,6 +455,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         e.preventDefault();
+
+        // Désactiver le bouton et afficher le spinner pour empêcher les doubles clics
+        const submitBtnText = submitBtn.querySelector('.submit-btn-text');
+        const submitSpinner = document.getElementById('submit-spinner');
+        submitBtn.disabled = true;
+        if (submitSpinner) submitSpinner.classList.remove('hidden');
+        if (submitBtnText) submitBtnText.textContent = 'Envoi en cours...';
+
         const formData = new FormData(appForm);
         const payload = {};
 
@@ -499,6 +519,9 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch((error) => {
             console.error('Erreur de soumission:', error);
             alert('Une erreur est survenue lors de l’envoi du formulaire. Merci de réessayer plus tard.');
+            submitBtn.disabled = false;
+            if (submitSpinner) submitSpinner.classList.add('hidden');
+            if (submitBtnText) submitBtnText.textContent = 'Activer le processus';
         });
     });
 

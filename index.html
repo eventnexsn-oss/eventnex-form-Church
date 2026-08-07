@@ -30,8 +30,10 @@
     <main class="app-container">
         
         <section class="right-column">
-            <h1 class="main-title">Préparation<br>Stratégique<br>Démo-Eventnex</h1>
-            <p class="time-estimate">Temps de remplissage [03 - 05] min</p>
+            <div class="title-block">
+                <h1 class="main-title">Préparation<br>Stratégique<br>Démo-Eventnex</h1>
+                <p class="time-estimate">| Temps de remplissage [03 - 05] min</p>
+            </div>
             
             <div id="thank-you-screen" class="hidden">
                 <h2>Cadrage validé !</h2>
@@ -506,7 +508,8 @@
                     </button>
                     
                     <button type="submit" class="submit-btn hidden" id="submit-form-btn">
-                        Activer le processus
+                        <span class="submit-btn-text">Activer le processus</span>
+                        <span class="submit-spinner hidden" id="submit-spinner"></span>
                     </button>
                 </div>
 
