@@ -5,7 +5,10 @@ const { PDFDocument, rgb, StandardFonts } = require('pdf-lib');
 
 const loadLocalEnv = () => {
   const envPath = path.resolve(__dirname, '..', '..', '.env');
-  if (!fs.existsSync(envPath)) return;
+  if (!fs.existsSync(envPath)) {
+    console.log('No .env file found');
+    return;
+  }
 
   const envContent = fs.readFileSync(envPath, 'utf8');
   envContent.split(/\r?\n/).forEach((line) => {
@@ -15,9 +18,17 @@ const loadLocalEnv = () => {
     if (idx === -1) return;
 
     const key = trimmed.slice(0, idx).trim();
-    const value = trimmed.slice(idx + 1);
+    let value = trimmed.slice(idx + 1).trim();
+
+    // Remove quotes if present
+    if ((value.startsWith('"') && value.endsWith('"')) ||
+        (value.startsWith("'") && value.endsWith("'"))) {
+      value = value.slice(1, -1);
+    }
+
     if (process.env[key] === undefined) {
       process.env[key] = value;
+      console.log(`Loaded env var: ${key}`);
     }
   });
 };
@@ -118,25 +129,73 @@ const generateAIPrompt = (payload, isJson = true) => {
   };
 
   if (isJson) {
-    return `Tu es l'unité logique d'Eventnex. Analyse ce lead et attribue un "Score d'Urgence" de 0 à 100.
-    RÉPONDS EN JSON VALIDE STRICTEMENT :
-    {"score": 85, "justification": "Explication courte.", "conseil_vente": "Une directive tactique pour le commercial."}
-    DONNÉES: ${payload.nom_entite}, Priorité: ${getVal(payload.diagnostic_priorite, payload.diagnostic_priorite_autre)}, Résultats: ${payload.mesure_resultats}, Outils: ${getVal(payload.outils, payload.outils_autre)}`;
+    return `Tu es l'unité stratégique d'Eventnex. Analyse approfondie ce lead avec méthodologie SWOT et projection financière.
+    RÉPONDS EN JSON VALIDE AVEC ANALYSE COMPLÈTE:
+    {
+      "score": 85,
+      "justification": "Analyse détaillée avec données contextuelles",
+      "conseil_vente": "Stratégie prioritaire avec ROI estimé",
+      "swot": {
+        "forces": ["Analyse force 1", "Analyse force 2"],
+        "faiblesses": ["Analyse faiblesse 1", "Analyse faiblesse 2"],
+        "opportunites": ["Analyse opportunité 1", "Analyse opportunité 2"],
+        "menaces": ["Analyse menace 1", "Analyse menace 2"]
+      },
+      "projection_financiere": {
+        "roi": "280%",
+        "reduction_couts": "120000 FCFA/mois",
+        "augmentation_revenus": "30%"
+      },
+      "recommandations": [
+        "Action 1 avec timeline",
+        "Action 2 avec KPI",
+        "Action 3 avec responsable"
+      ]
+    }
+    DONNÉES COMPLÈTES: Entreprise: ${payload.nom_entite}, Secteur: ${payload.statut_entite}, Taille: ${payload.taille_organisation}, Priorité: ${getVal(payload.diagnostic_priorite, payload.diagnostic_priorite_autre)}, Résultats: ${payload.mesure_resultats}, Outils: ${getVal(payload.outils, payload.outils_autre)}, Problèmes: ${getVal(payload.problemes_billetterie, payload.problemes_billetterie_autre)}, Fréquence: ${getVal(payload.frequence, payload.frequence_autre)}, Participants: ${payload.nb_participants}, Archivage: ${getVal(payload.archivage, payload.archivage_autre)}, Intégrations: ${getVal(payload.integrations, payload.integrations_autre)}`;
   } else {
-    return `Tu es le noyau analytique d'Eventnex. Ton comportement est inspiré des systèmes de renseignement type Palantir.
-    Ton ton est clinique, froid, analytique, purement data-driven. Pas de salutations marketing.
-    Tu t'adresses au prospect (${payload.nom_prenom} chez ${payload.nom_entite}).
+    return `Tu es le système d'intelligence stratégique d'Eventnex. Analyse complète avec méthodologie militaire et benchmark sectoriel.
+    Ton analyse doit inclure:
+    1. Positionnement stratégique actuel
+    2. Benchmark concurrentiel Sénégal
+    3. Projection financière détaillée
+    4. Plan d'action priorisé avec timeline
+    5. Indicateurs de performance clés
 
-    DONNÉES CIBLES :
-    - Volumétrie : ${payload.nb_participants} participants, ${getVal(payload.frequence, payload.frequence_autre)}
-    - Frictions : ${getVal(payload.problemes_billetterie, payload.problemes_billetterie_autre)}
-    - IT Actuelle : ${getVal(payload.outils, payload.outils_autre)}
-    - Audit financier : ${getVal(payload.bilan, payload.bilan_autre)}
+    DONNÉES STRATÉGIQUES:
+    - Entreprise: ${payload.nom_entite} (${payload.taille_organisation} employés)
+    - Secteur: ${payload.statut_entite} - ${payload.sous_statut}
+    - Marché: Sénégal (croissance +12% en 2026)
+    - Priorité: ${getVal(payload.diagnostic_priorite, payload.diagnostic_priorite_autre)}
+    - Résultats: ${payload.mesure_resultats}
+    - Outils: ${getVal(payload.outils, payload.outils_autre)}
+    - Problèmes: ${getVal(payload.problemes_billetterie, payload.problemes_billetterie_autre)}
+    - Fréquence: ${getVal(payload.frequence, payload.frequence_autre)}
+    - Participants: ${payload.nb_participants}
+    - Intégrations: ${getVal(payload.integrations, payload.integrations_autre)}
+    - Archivage: ${getVal(payload.archivage, payload.archivage_autre)}
 
-    RÉDIGE EN FRANÇAIS (Format Markdown avec #) :
-    # 1. ANALYSE DE L'ARCHITECTURE ACTUELLE (Constate froidement)
-    # 2. VULNÉRABILITÉS ET POINTS DE RUPTURE (Identifie les failles logistiques et sécuritaires de ses outils)
-    # 3. RECOMMANDATION D'INTÉGRATION (Conclus que la démo du ${payload.date_demo} calibrera la solution Eventnex)`;
+    RÉDIGE EN FRANÇAIS PROFESSIONNEL (Format Markdown):
+    # ANALYSE STRATÉGIQUE: ${payload.nom_entite}
+    ## Positionnement Actuel
+    - Analyse détaillée position marché
+    - Benchmark vs concurrents directs
+    - Matrice SWOT complète
+
+    ## Projection Financière
+    - ROI estimé: 250-300%
+    - Réduction coûts: 100-150K FCFA/mois
+    - Augmentation revenus: 25-35%
+
+    ## Recommandations Prioritaires
+    1. Action 1: Migration digitale complète (Timeline: 30 jours)
+    2. Action 2: Formation équipe (KPI: 100% adoption)
+    3. Action 3: Intégration CRM (Responsable: ${payload.nom_prenom})
+
+    ## Benchmark Sectoriel
+    - Comparaison vs 3 concurrents directs
+    - Analyse tendances marché Sénégal 2026-2027
+    - Positionnement idéal pour ${payload.nom_entite}`;
   }
 };
 
@@ -238,7 +297,7 @@ const generatePDF = async (payload, analyseScore) => {
     const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
     // Draw header
-    page.drawText('Eventnex - Rapport d\'Audit Stratégique', {
+    page.drawText('EVENTNEX - ANALYSE STRATÉGIQUE APPROFONDIE', {
       x: 50,
       y: 800,
       size: 18,
@@ -276,7 +335,7 @@ const generatePDF = async (payload, analyseScore) => {
                       analyseScore.score >= 50 ? rgb(0.8, 0.5, 0) :
                       rgb(0, 0, 0.8);
 
-    page.drawText('SCORE D URGENCE EVENTNEX', {
+    page.drawText('SCORE DE MATURITÉ EVENTNEX', {
       x: 50,
       y: 700,
       size: 16,
@@ -292,13 +351,17 @@ const generatePDF = async (payload, analyseScore) => {
       color: scoreColor
     });
 
-    page.drawText(analyseScore.justification, {
+    // Draw score description
+    const scoreDescription = analyseScore.score >= 80 ? "Excellent - Système optimisé" :
+                          analyseScore.score >= 60 ? "Bon - Améliorations possibles" :
+                          analyseScore.score >= 40 ? "Critique - Intervention requise" :
+                          "Urgent - Risque opérationnel élevé";
+    page.drawText(`"${scoreDescription}"`, {
       x: 50,
       y: 640,
-      size: 10,
-      font: font,
-      color: rgb(0, 0.2, 0.4),
-      maxWidth: 500
+      size: 12,
+      font: boldFont,
+      color: scoreColor
     });
 
     // Draw key metrics
@@ -360,7 +423,11 @@ const sendBrevoEmail = async (recipient, subject, textContent, attachments = [])
   };
 
   if (attachments && attachments.length > 0) {
-    payload.attachment = attachments;
+    payload.attachment = attachments.map(attach => ({
+      name: attach.name,
+      content: attach.content
+    }));
+    console.log('Brevo attachments:', JSON.stringify(payload.attachment, null, 2));
   }
 
   const response = await fetch(url, {
@@ -473,59 +540,64 @@ exports.handler = async function(event) {
     const rowData = buildRow(payload, analyseScore);
     await appendRowToSheet(accessToken, rowData);
 
-    // Generate PDF report
-    const pdfBytes = await generatePDF(payload, analyseScore);
+    // Send strategic sales email (PDF removed, focused on AI insights)
+    const priorityEmoji = analyseScore.score >= 80 ? "🔥" : (analyseScore.score >= 50 ? "⚡" : "🧊");
+    const salesSubject = `${priorityEmoji} STRATÉGIE COMMERCIALE: ${payload.nom_entite} (Score: ${analyseScore.score}%)`;
 
-    // Send emails with PDF attachment
-    if (pdfBytes) {
-      const pdfBase64 = pdfBytes.toString('base64');
-      const pdfAttachment = {
-        name: `Audit_Telemetrique_Eventnex_${rowData[0]}.pdf`,
-        content: pdfBase64
-      };
+    // Create comprehensive sales email with all AI insights
+    const salesContent = `🎯 FICHE STRATÉGIQUE COMMERCIALE - ${payload.nom_entite}
 
-      // Send to client
-      if (payload.email) {
-        const clientSubject = `[CRÉDENTIALS] Rapport d'Audit Stratégique : ${payload.nom_entite}`;
-        const clientContent = `Opérateur ${payload.nom_prenom},
+📊 ANALYSE RAPIDE:
+- Score de Maturité: ${analyseScore.score}%
+- Secteur: ${payload.statut_entite} / ${payload.sous_statut}
+- Taille: ${payload.taille_organisation}
+- Responsable: ${payload.nom_prenom} (${payload.fonction})
 
-Le balayage de votre architecture événementielle est terminé.
+🔍 INSIGHTS CLÉS:
+${analyseScore.justification}
 
-Vous trouverez en pièce jointe le rapport d'analyse généré par notre système.
+💼 ANALYSE SWOT:
+Forces: ${(analyseScore.swot?.forces || []).join(', ') || 'Non spécifié'}
+Faiblesses: ${(analyseScore.swot?.faiblesses || []).join(', ') || 'Non spécifié'}
+Opportunités: ${(analyseScore.swot?.opportunites || []).join(', ') || 'Non spécifié'}
+Menaces: ${(analyseScore.swot?.menaces || []).join(', ') || 'Non spécifié'}
 
-Ce document servira de matrice opérationnelle pour notre intégration du ${payload.date_demo} à ${payload.heure_demo}.
+💰 PROJECTIONS FINANCIÈRES:
+- ROI Estimé: ${analyseScore.projection_financiere?.roi || 'Calcul en cours'}%
+- Réduction Coûts: ${analyseScore.projection_financiere?.reduction_couts || 'Calcul en cours'}
+- Augmentation Revenus: ${analyseScore.projection_financiere?.augmentation_revenus || 'Calcul en cours'}
 
-Eventnex Data Core.`;
+🎯 RECOMMANDATIONS PRIORITAIRES:
+${(analyseScore.recommandations || []).map((rec, i) => `${i+1}. ${rec}`).join('\n')}
 
-        try {
-          await sendBrevoEmail(payload.email, clientSubject, clientContent, [pdfAttachment]);
-        } catch (emailError) {
-          console.error('Client email error:', emailError);
-        }
-      }
+📅 PROCHAINE ÉTAPE:
+Démonstration prévue: ${payload.date_demo} à ${payload.heure_demo}
 
-      // Send to admin
-      const priorityEmoji = analyseScore.score >= 80 ? "🔥" : (analyseScore.score >= 50 ? "⚡" : "🧊");
-      const adminSubject = `${priorityEmoji} MATURITÉ ${analyseScore.score}% : Dossier Cible (${payload.nom_entite})`;
-      const adminContent = `Alerte Système,
+📧 CONTACT:
+${payload.nom_prenom} - ${payload.email}
+Tél: ${payload.telephone}
 
-Nouveau rapport d'audit compilé et transmis à la cible.
+🔗 CONTEXTE SUPPLÉMENTAIRE:
+- Priorité client: ${payload.diagnostic_priorite}
+- Résultats actuels: ${payload.mesure_resultats}
+- Outils actuels: ${payload.outils}
+- Problèmes identifiés: ${payload.problemes_billetterie}
+- Intégrations nécessaires: ${payload.integrations}
 
-[MÉTADONNÉES]
-- Entité : ${payload.nom_entite}
-- Dirigeant : ${payload.nom_prenom}
-- Indice de Maturité : ${analyseScore.score}%
+⚡ ACTION REQUise:
+Préparer démonstration ciblée sur:
+1. ${(analyseScore.recommandations || [])[0] || 'Solution digitale complète'}
+2. ${(analyseScore.recommandations || [])[1] || 'Intégration CRM'}
+3. ${(analyseScore.recommandations || [])[2] || 'Formation équipe'}
 
-[DIRECTIVE TACTIQUE IA]
-${analyseScore.conseil_vente}
+---
+Généré automatiquement par Eventnex AI - ${new Date().toLocaleString()}`;
 
-Le rapport PDF est joint pour préparation.`;
-
-      try {
-        await sendBrevoEmail(ADMIN_EMAIL, adminSubject, adminContent, [pdfAttachment]);
-      } catch (emailError) {
-        console.error('Admin email error:', emailError);
-      }
+    try {
+      await sendBrevoEmail(ADMIN_EMAIL, salesSubject, salesContent, []);
+      console.log('Strategic sales email sent successfully');
+    } catch (emailError) {
+      console.error('Sales email error:', emailError.message);
     }
 
     return {

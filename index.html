@@ -29,11 +29,9 @@
 
     <main class="app-container">
         
-        <section class="left-column">
-            <h1 class="main-title">Préparation<br>Stratégique<br>Démo-Eventnex</h1>
-        </section>
-
         <section class="right-column">
+            <h1 class="main-title">Préparation<br>Stratégique<br>Démo-Eventnex</h1>
+            <p class="time-estimate">Temps de remplissage [03 - 05] min</p>
             
             <div id="thank-you-screen" class="hidden">
                 <h2>Cadrage validé !</h2>
@@ -41,7 +39,8 @@
                 <p>Redirection vers la plateforme dans <span id="countdown">5</span> secondes...</p>
             </div>
 
-            <form id="eventnex-form" novalidate>
+            <div class="form-container">
+                <form id="eventnex-form" novalidate>
                 
                 <div class="step-progress" aria-label="Progression des étapes" id="step-progress">
                     <div class="step-progress-item active" data-step="1"><span class="step-pill">0.1</span></div>
@@ -78,7 +77,7 @@
                     <h2 class="step-heading">Identification de l'organisation</h2>
                     
                     <div class="form-field select-wrapper">
-                        <label class="field-label">1. Statut de votre organisation <span class="required-star">*</span></label>
+                        <label class="field-label">Statut de votre organisation <span class="required-star">*</span></label>
                         <select name="statut_entite" id="statut_entite" class="input-select required-field data-autre-trigger">
                             <option value="" disabled selected></option>
                             <option value="Institutions religieuses">Institutions religieuses</option>
@@ -94,7 +93,7 @@
                     </div>
 
                     <div class="form-field select-wrapper hidden" id="sous_statut_container">
-                        <label class="field-label">2. Précisez votre statut <span class="required-star">*</span></label>
+                        <label class="field-label">Précisez votre statut <span class="required-star">*</span></label>
                         <select name="sous_statut" id="sous_statut" class="input-select data-autre-trigger">
                             </select>
                         <div class="input-autre-container hidden">
@@ -103,7 +102,7 @@
                     </div>
 
                     <div class="form-field select-wrapper hidden" id="taille_organisation_container">
-                        <label class="field-label">2.1 Taille de votre organisation</label>
+                        <label class="field-label">Taille de votre organisation</label>
                         <select name="taille_organisation" id="taille_organisation" class="input-select">
                             <option value="" disabled selected></option>
                             <option value="1-10">1-10 collaborateurs</option>
@@ -114,22 +113,22 @@
                     </div>
 
                     <div class="form-field">
-                        <label class="field-label">3. Nom de l'entité <span class="required-star">*</span></label>
+                        <label class="field-label">Nom de l'entité <span class="required-star">*</span></label>
                         <input type="text" name="nom_entite" class="input-text required-field">
                     </div>
                     
                     <div class="form-field">
-                        <label class="field-label">4. Sous-entité / Département <span class="field-desc">(optionnel)</span></label>
+                        <label class="field-label">Sous-entité / Département <span class="field-desc">(optionnel)</span></label>
                         <input type="text" name="sous_entite" class="input-text">
                     </div>
 
                     <div class="form-field">
-                        <label class="field-label">5. Nom et Prénom <span class="required-star">*</span></label>
+                        <label class="field-label">Nom et Prénom <span class="required-star">*</span></label>
                         <input type="text" name="nom_prenom" class="input-text required-field">
                     </div>
 
                     <div class="form-field select-wrapper">
-                        <label class="field-label">6. Fonction <span class="required-star">*</span></label>
+                        <label class="field-label">Fonction <span class="required-star">*</span></label>
                         <select name="fonction" class="input-select required-field data-autre-trigger">
                             <option value="" disabled selected></option>
                             <option value="Direction / Présidence">Direction / Présidence</option>
@@ -144,7 +143,7 @@
                     </div>
 
                     <div class="form-field">
-                        <label class="field-label">7. Téléphone <span class="required-star">*</span></label>
+                        <label class="field-label">Téléphone <span class="required-star">*</span></label>
                         <div class="phone-wrapper">
                             <span class="phone-prefix">+221</span>
                             <input type="tel" name="telephone" class="input-text required-field phone-input" placeholder="768643920">
@@ -152,7 +151,7 @@
                     </div>
 
                     <div class="form-field">
-                        <label class="field-label">8. Email professionnel <span class="required-star">*</span></label>
+                        <label class="field-label">Email professionnel <span class="required-star">*</span></label>
                         <input type="email" name="email" class="input-text required-field">
                     </div>
                 </div>
@@ -161,7 +160,7 @@
                     <h2 class="step-heading">Cadrage stratégique</h2>
                     
                     <div class="form-field choice-group-required">
-                        <label class="field-label">9. Si vous pouviez changer une seule chose dès maintenant, quelle serait-elle ? <span class="required-star">*</span></label>
+                        <label class="field-label">Si vous pouviez changer une seule chose dès maintenant, quelle serait-elle ? <span class="required-star">*</span></label>
                         <div class="options-stack">
                             <label><input type="radio" name="diagnostic_priorite" value="Fluidifier l'accueil physique et les files d'attente"> Fluidifier l'accueil physique et les files d'attente</label>
                             <label><input type="radio" name="diagnostic_priorite" value="Sécuriser les flux financiers et la billetterie"> Sécuriser les flux financiers et la billetterie</label>
@@ -175,7 +174,7 @@
                     </div>
 
                     <div class="form-field choice-group-required">
-                        <label class="field-label">10. Avez-vous déjà essayé de résoudre ce problème par le passé ? <span class="required-star">*</span></label>
+                        <label class="field-label">Avez-vous déjà essayé de résoudre ce problème par le passé ? <span class="required-star">*</span></label>
                         <div class="options-stack">
                             <label><input type="radio" name="historique_tentative" value="Oui, sans succès durable"> Oui, sans succès durable</label>
                             <label><input type="radio" name="historique_tentative" value="Oui, avec un succès partiel"> Oui, avec un succès partiel</label>
@@ -184,7 +183,7 @@
                     </div>
 
                     <div class="form-field choice-group-required">
-                        <label class="field-label">11. Dans votre fonctionnement actuel, qu'est-ce que vous ne voulez SURTOUT PAS changer ? <span class="required-star">*</span></label>
+                        <label class="field-label">Dans votre fonctionnement actuel, qu'est-ce que vous ne voulez SURTOUT PAS changer ? <span class="required-star">*</span></label>
                         <div class="options-stack">
                             <label><input type="radio" name="element_intouchable" value="Le contact humain et l'accueil chaleureux"> Le contact humain et l'accueil chaleureux</label>
                             <label><input type="radio" name="element_intouchable" value="La hiérarchie et les processus de validation internes"> La hiérarchie et les processus de validation internes</label>
@@ -197,7 +196,7 @@
                     </div>
 
                     <div class="form-field choice-group-required">
-                        <label class="field-label">12. Qu’est-ce qui vous empêche de régler ce problème vous-même en interne ? <span class="required-star">*</span></label>
+                        <label class="field-label">Qu’est-ce qui vous empêche de régler ce problème vous-même en interne ? <span class="required-star">*</span></label>
                         <div class="options-stack">
                             <label><input type="radio" name="blocage_interne" value="Le manque d'outils technologiques adaptés"> Le manque d'outils technologiques adaptés</label>
                             <label><input type="radio" name="blocage_interne" value="Le manque de temps des équipes"> Le manque de temps des équipes</label>
@@ -211,7 +210,7 @@
                     </div>
 
                     <div class="form-field choice-group-required">
-                        <label class="field-label">13. De manière générale, comment évaluez-vous vos résultats actuels sur la gestion événementielle ? <span class="required-star">*</span></label>
+                        <label class="field-label">De manière générale, comment évaluez-vous vos résultats actuels sur la gestion événementielle ? <span class="required-star">*</span></label>
                         <div class="options-stack">
                             <label><input type="radio" name="mesure_resultats" value="Critiques (Pertes financières / Risques élevés)"> Critiques (Pertes financières / Risques élevés)</label>
                             <label><input type="radio" name="mesure_resultats" value="Médiocres (Beaucoup de frictions et de stress)"> Médiocres (Beaucoup de frictions et de stress)</label>
@@ -221,7 +220,7 @@
                     </div>
 
                     <div class="form-field choice-group-required">
-                        <label class="field-label">14. Quel est votre budget indicatif pour une solution événementielle ? <span class="required-star">*</span></label>
+                        <label class="field-label">Quel est votre budget indicatif pour une solution événementielle ? <span class="required-star">*</span></label>
                         <div class="options-stack">
                             <label><input type="radio" name="budget" value="Moins de 100 000 FCFA/An"> Moins de 100 000 FCFA/An</label>
                             <label><input type="radio" name="budget" value="100 000 - 500 000 FCFA/An"> 100 000 - 500 000 FCFA/An</label>
@@ -235,7 +234,7 @@
                     </div>
 
                     <div class="form-field choice-group-required">
-                        <label class="field-label">15. Qui d'autre est impliqué dans la décision ? <span class="required-star">*</span></label>
+                        <label class="field-label">Qui d'autre est impliqué dans la décision ? <span class="required-star">*</span></label>
                         <div class="options-stack">
                             <label><input type="checkbox" name="decideurs[]" value="Je décide seul(e)"> Je décide seul(e)</label>
                             <label><input type="checkbox" name="decideurs[]" value="Direction / Comité de direction"> Direction / Comité de direction</label>
@@ -253,7 +252,7 @@
                     <h2 class="step-heading">Opérations : Événements & Billetterie</h2>
                     
                     <div class="form-field choice-group-required">
-                        <label class="field-label">14. Quel est le nombre moyen de participants ? <span class="required-star">*</span></label>
+                        <label class="field-label">Quel est le nombre moyen de participants ? <span class="required-star">*</span></label>
                         <div class="options-stack">
                             <label><input type="radio" name="nb_participants" value="Moins de 100"> Moins de 100</label>
                             <label><input type="radio" name="nb_participants" value="100 – 300"> 100 – 300</label>
@@ -264,7 +263,7 @@
                     </div>
 
                     <div class="form-field choice-group-required">
-                        <label class="field-label">15. Fréquence de vos événements : <span class="required-star">*</span></label>
+                        <label class="field-label">Fréquence de vos événements : <span class="required-star">*</span></label>
                         <div class="options-stack">
                             <label><input type="radio" name="frequence" value="Hebdomadaire / Mensuel"> Hebdomadaire / Mensuel</label>
                             <label><input type="radio" name="frequence" value="Trimestriel / Semestriel"> Trimestriel / Semestriel</label>
@@ -277,7 +276,7 @@
                     </div>
 
                     <div class="form-field choice-group-required">
-                        <label class="field-label">16. Type d'accès : <span class="required-star">*</span></label>
+                        <label class="field-label">Type d'accès : <span class="required-star">*</span></label>
                         <div class="options-stack">
                             <label><input type="radio" name="type_evenement" value="Totalement gratuits"> Totalement gratuits</label>
                             <label><input type="radio" name="type_evenement" value="Totalement payants"> Totalement payants</label>
@@ -291,7 +290,7 @@
                     </div>
 
                     <div class="form-field choice-group-required">
-                        <label class="field-label">17. Comment vendez/distribuez-vous vos billets actuellement ? <span class="field-desc">(Plusieurs choix)</span> <span class="required-star">*</span></label>
+                        <label class="field-label">Comment vendez/distribuez-vous vos billets actuellement ? <span class="field-desc">(Plusieurs choix)</span> <span class="required-star">*</span></label>
                         <div class="options-stack">
                             <label><input type="checkbox" name="vente_billets[]" value="Sur place le jour J"> Sur place le jour J</label>
                             <label><input type="checkbox" name="vente_billets[]" value="En avant-vente (Physique)"> En avant-vente (Physique)</label>
@@ -305,7 +304,7 @@
                     </div>
 
                     <div class="form-field choice-group-required">
-                        <label class="field-label">18. Points de douleur sur la billetterie : <span class="field-desc">(Plusieurs choix)</span> <span class="required-star">*</span></label>
+                        <label class="field-label">Points de douleur sur la billetterie : <span class="field-desc">(Plusieurs choix)</span> <span class="required-star">*</span></label>
                         <div class="options-stack">
                             <label><input type="checkbox" name="problemes_billetterie[]" value="Files d'attente interminables"> Files d'attente interminables</label>
                             <label><input type="checkbox" name="problemes_billetterie[]" value="Taux de fraude / Faux billets"> Taux de fraude / Faux billets</label>
@@ -323,7 +322,7 @@
                     <h2 class="step-heading">Logistique terrain & Communication</h2>
 
                     <div class="form-field choice-group-required">
-                        <label class="field-label">19. Méthode de contrôle à l'entrée : <span class="field-desc">(Plusieurs choix)</span> <span class="required-star">*</span></label>
+                        <label class="field-label">Méthode de contrôle à l'entrée : <span class="field-desc">(Plusieurs choix)</span> <span class="required-star">*</span></label>
                         <div class="options-stack">
                             <label><input type="checkbox" name="controle_entrees[]" value="Déchirure de tickets papier"> Déchirure de tickets papier</label>
                             <label><input type="checkbox" name="controle_entrees[]" value="Pointage sur liste imprimée"> Pointage sur liste imprimée</label>
@@ -337,7 +336,7 @@
                     </div>
 
                     <div class="form-field choice-group-required">
-                        <label class="field-label">20. Comment communiquez-vous avant l'événement ? <span class="field-desc">(Plusieurs choix)</span> <span class="required-star">*</span></label>
+                        <label class="field-label">Comment communiquez-vous avant l'événement ? <span class="field-desc">(Plusieurs choix)</span> <span class="required-star">*</span></label>
                         <div class="options-stack">
                             <label><input type="checkbox" name="com_avant[]" value="Groupes WhatsApp"> Groupes WhatsApp</label>
                             <label><input type="checkbox" name="com_avant[]" value="Emailing"> Emailing</label>
@@ -351,7 +350,7 @@
                     </div>
 
                     <div class="form-field choice-group-required">
-                        <label class="field-label">21. Principale faille de communication : <span class="field-desc">(Plusieurs choix)</span> <span class="required-star">*</span></label>
+                        <label class="field-label">Principale faille de communication : <span class="field-desc">(Plusieurs choix)</span> <span class="required-star">*</span></label>
                         <div class="options-stack">
                             <label><input type="checkbox" name="difficulte_com[]" value="Messages perdus ou non lus sur WhatsApp"> Messages perdus ou non lus sur WhatsApp</label>
                             <label><input type="checkbox" name="difficulte_com[]" value="Base de données contacts obsolète ou inexistante"> Base de données contacts obsolète ou inexistante</label>
@@ -364,7 +363,7 @@
                     </div>
 
                     <div class="form-field choice-group-required">
-                        <label class="field-label">22. Comment s'effectue la reddition des comptes (Bilan) ? <span class="field-desc">(Plusieurs choix)</span> <span class="required-star">*</span></label>
+                        <label class="field-label">Comment s'effectue la reddition des comptes (Bilan) ? <span class="field-desc">(Plusieurs choix)</span> <span class="required-star">*</span></label>
                         <div class="options-stack">
                             <label><input type="checkbox" name="bilan[]" value="Calcul manuel de la caisse"> Calcul manuel de la caisse</label>
                             <label><input type="checkbox" name="bilan[]" value="Ressaisie et formules sur Excel"> Ressaisie et formules sur Excel</label>
@@ -381,7 +380,7 @@
                     <h2 class="step-heading">Gouvernance & Flux de travail</h2>
 
                     <div class="form-field choice-group-required">
-                        <label class="field-label">23. Vos outils structurels : <span class="field-desc">(Plusieurs choix)</span> <span class="required-star">*</span></label>
+                        <label class="field-label">Vos outils structurels : <span class="field-desc">(Plusieurs choix)</span> <span class="required-star">*</span></label>
                         <div class="options-stack">
                             <label><input type="checkbox" name="outils[]" value="Excel / Sheets"> Excel / Sheets</label>
                             <label><input type="checkbox" name="outils[]" value="Trello / Notion / Jira"> Trello / Notion / Jira</label>
@@ -395,7 +394,7 @@
                     </div>
 
                     <div class="form-field choice-group-required">
-                        <label class="field-label">24. Gestion des équipes (Bénévoles/Staff) : <span class="field-desc">(Plusieurs choix)</span> <span class="required-star">*</span></label>
+                        <label class="field-label">Gestion des équipes (Bénévoles/Staff) : <span class="field-desc">(Plusieurs choix)</span> <span class="required-star">*</span></label>
                         <div class="options-stack">
                             <label><input type="checkbox" name="plannings[]" value="Attribution informelle (à l'oral)"> Attribution informelle (à l'oral)</label>
                             <label><input type="checkbox" name="plannings[]" value="Tableau de service Excel"> Tableau de service Excel</label>
@@ -408,7 +407,7 @@
                     </div>
 
                     <div class="form-field choice-group-required">
-                        <label class="field-label">25. Existence de protocoles documentés : <span class="required-star">*</span></label>
+                        <label class="field-label">Existence de protocoles documentés : <span class="required-star">*</span></label>
                         <div class="options-stack">
                             <label><input type="radio" name="procedures" value="Oui, procédures strictes et écrites"> Oui, procédures strictes et écrites</label>
                             <label><input type="radio" name="procedures" value="Tradition orale uniquement"> Tradition orale uniquement</label>
@@ -417,7 +416,7 @@
                     </div>
 
                     <div class="form-field choice-group-required">
-                        <label class="field-label">26. Capitalisation (Archivage) : <span class="field-desc">(Plusieurs choix)</span> <span class="required-star">*</span></label>
+                        <label class="field-label">Capitalisation (Archivage) : <span class="field-desc">(Plusieurs choix)</span> <span class="required-star">*</span></label>
                         <div class="options-stack">
                             <label><input type="checkbox" name="archivage[]" value="Base de données Cloud (CRM)"> Base de données Cloud (CRM)</label>
                             <label><input type="checkbox" name="archivage[]" value="Fichiers Excel statiques"> Fichiers Excel statiques</label>
@@ -431,7 +430,7 @@
                     </div>
 
                     <div class="form-field choice-group-required">
-                        <label class="field-label">24. Intégrations/conformité : <span class="field-desc">(Plusieurs choix)</span> <span class="required-star">*</span></label>
+                        <label class="field-label">Intégrations/conformité : <span class="field-desc">(Plusieurs choix)</span> <span class="required-star">*</span></label>
                         <div class="options-stack">
                             <label><input type="checkbox" name="integrations[]" value="Connexion à un CRM existant"> Connexion à un CRM existant</label>
                             <label><input type="checkbox" name="integrations[]" value="Exigences RGPD spécifiques (hébergement, DPA)"> Exigences RGPD spécifiques (hébergement, DPA)</label>
@@ -445,7 +444,7 @@
                     </div>
 
                     <div class="form-field choice-group-required">
-                        <label class="field-label">25. Votre macro-objectif avec l'architecture Eventnex : <span class="field-desc">(Plusieurs choix)</span> <span class="required-star">*</span></label>
+                        <label class="field-label">Votre macro-objectif avec l'architecture Eventnex : <span class="field-desc">(Plusieurs choix)</span> <span class="required-star">*</span></label>
                         <div class="options-stack">
                             <label><input type="checkbox" name="objectif[]" value="Automatiser pour diviser le temps de préparation par deux"> Automatiser pour diviser le temps de préparation par deux</label>
                             <label><input type="checkbox" name="objectif[]" value="Sécuriser les recettes financières à 100%"> Sécuriser les recettes financières à 100%</label>
@@ -463,7 +462,7 @@
                     <h2 class="step-heading">Configuration de la Démonstration</h2>
 
                     <div class="form-field">
-                        <label class="field-label">28. Créneau d'audit (Entre 16h00 et 21h30) <span class="required-star">*</span></label>
+                        <label class="field-label">Créneau d'audit (Entre 16h00 et 21h30) <span class="required-star">*</span></label>
                         <div style="display:flex; gap:15px; flex-wrap:wrap;">
                             <div style="flex:1; min-width:180px;">
                                 <input type="date" name="date_demo" id="date_demo" class="input-text required-field">
@@ -476,7 +475,7 @@
                     </div>
 
                     <div class="form-field">
-                        <label class="field-label">29. Contexte additionnel <span class="field-desc">(Optionnel)</span></label>
+                        <label class="field-label">Contexte additionnel <span class="field-desc">(Optionnel)</span></label>
                         <textarea name="commentaires" class="input-textarea" placeholder="Partagez-nous tout détail pertinent pour orienter l'audit technique..."></textarea>
                     </div>
 
@@ -512,6 +511,7 @@
                 </div>
 
             </form>
+            </div>
         </section>
     </main>
 
