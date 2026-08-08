@@ -1,7 +1,6 @@
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
-const { PDFDocument, rgb, StandardFonts } = require('pdf-lib');
 
 const loadLocalEnv = () => {
   const envPath = path.resolve(__dirname, '..', '..', '.env');
@@ -129,12 +128,33 @@ const generateAIPrompt = (payload, isJson = true) => {
   };
 
   if (isJson) {
-    return `Tu es l'unité stratégique d'Eventnex. Analyse approfondie ce lead avec méthodologie SWOT et projection financière.
+    return `Tu es l'unité stratégique d'Eventnex. Tu dois noter la MATURITÉ OPÉRATIONNELLE de ce prospect, PAS son potentiel commercial.
+
+    RÈGLE DE NOTATION STRICTE (score de 0 à 100, en partant de 50 puis en appliquant ces ajustements) :
+    - Résultats actuels "Critiques": -25 points | "Médiocres": -15 points | "Moyens": -5 points | "Corrects": +15 points
+    - Procédures "Gestion de crise au fur et à mesure": -15 points | "Tradition orale uniquement": -10 points | "Oui, procédures strictes et écrites": +15 points
+    - Archivage "Aucune mémoire conservée": -10 points
+    - Gestion des équipes "Attribution informelle (à l'oral)": -10 points
+    - Contrôle d'entrée manuel (papier, liste imprimée): -5 points
+    - Un score final supérieur à 70 EXIGE au moins deux indicateurs positifs ci-dessus. Sans indicateur positif, le score ne peut pas dépasser 45.
+    Le score reflète l'état ACTUEL du prospect, pas son potentiel après avoir adopté Eventnex.
+
+    Chaque élément du SWOT doit être un fait distinct : ne jamais reformuler la même faiblesse à la fois en "Force" et en "Faiblesse".
+
+    IMPORTANT: Dans "justification", donne une analyse qualitative fluide, JAMAIS de calcul chiffré ni de liste de points déduits (pas de "-15 points", pas d'arithmétique visible). Cette justification est un texte destiné à un usage interne, elle doit rester professionnelle et synthétique sans exposer la mécanique de notation.
+
+    Génère aussi un champ "message_client": un message court, chaleureux et professionnel destiné DIRECTEMENT au prospect. Ce message ne doit JAMAIS contenir de chiffres (pas de score, pas de ROI, pas de pourcentage, pas de montant en FCFA) ni mentionner de mécanique de notation. Il doit se limiter à reconnaître les priorités exprimées par le prospect et annoncer que l'équipe prépare une démonstration personnalisée.
+
+    Les projections financières ("projection_financiere") et "conseil_vente" sont un usage STRICTEMENT INTERNE pour l'équipe commerciale — précise-le mentalement mais ne les répète pas dans "message_client".
+
+    RÈGLE STRICTE SUR LES PROJECTIONS FINANCIÈRES: tu ne connais PAS les dépenses réelles du prospect (aucune facture, aucun coût opérationnel détaillé ne t'a été fourni). N'invente JAMAIS un montant en FCFA précis. Base "reduction_couts" et "augmentation_revenus" UNIQUEMENT sur le "Budget déclaré" fourni dans les données ci-dessous, exprimé en pourcentage de ce budget, jamais en montant absolu isolé. Si le budget déclaré est "non renseigné", écris "Non calculable — budget non renseigné" pour "reduction_couts" et n'avance aucun montant. Le "roi" doit toujours porter la mention "(estimation indicative, non contractuelle)".
+
     RÉPONDS EN JSON VALIDE AVEC ANALYSE COMPLÈTE:
     {
       "score": 85,
-      "justification": "Analyse détaillée avec données contextuelles",
-      "conseil_vente": "Stratégie prioritaire avec ROI estimé",
+      "justification": "Analyse qualitative interne, sans calcul chiffré",
+      "message_client": "Message chaleureux sans aucun chiffre, destiné au prospect",
+      "conseil_vente": "Stratégie prioritaire avec ROI estimé (usage interne uniquement)",
       "swot": {
         "forces": ["Analyse force 1", "Analyse force 2"],
         "faiblesses": ["Analyse faiblesse 1", "Analyse faiblesse 2"],
@@ -152,7 +172,7 @@ const generateAIPrompt = (payload, isJson = true) => {
         "Action 3 avec responsable"
       ]
     }
-    DONNÉES COMPLÈTES: Entreprise: ${payload.nom_entite}, Secteur: ${payload.statut_entite}, Taille: ${payload.taille_organisation}, Priorité: ${getVal(payload.diagnostic_priorite, payload.diagnostic_priorite_autre)}, Résultats: ${payload.mesure_resultats}, Outils: ${getVal(payload.outils, payload.outils_autre)}, Problèmes: ${getVal(payload.problemes_billetterie, payload.problemes_billetterie_autre)}, Fréquence: ${getVal(payload.frequence, payload.frequence_autre)}, Participants: ${payload.nb_participants}, Archivage: ${getVal(payload.archivage, payload.archivage_autre)}, Intégrations: ${getVal(payload.integrations, payload.integrations_autre)}`;
+    DONNÉES COMPLÈTES: Entreprise: ${payload.nom_entite}, Secteur: ${payload.statut_entite}, Taille: ${payload.taille_organisation}, Budget déclaré: ${payload.budget || 'non renseigné'}, Priorité: ${getVal(payload.diagnostic_priorite, payload.diagnostic_priorite_autre)}, Résultats: ${payload.mesure_resultats}, Outils: ${getVal(payload.outils, payload.outils_autre)}, Problèmes: ${getVal(payload.problemes_billetterie, payload.problemes_billetterie_autre)}, Fréquence: ${getVal(payload.frequence, payload.frequence_autre)}, Participants: ${payload.nb_participants}, Archivage: ${getVal(payload.archivage, payload.archivage_autre)}, Intégrations: ${getVal(payload.integrations, payload.integrations_autre)}`;
   } else {
     return `Tu es le système d'intelligence stratégique d'Eventnex. Analyse complète avec méthodologie militaire et benchmark sectoriel.
     Ton analyse doit inclure:
@@ -285,128 +305,6 @@ const callGeminiAI = async (prompt) => {
 };
 
 // Brevo Email Function
-// PDF Generation Function
-const generatePDF = async (payload, analyseScore) => {
-  try {
-    // Create a new PDF document
-    const pdfDoc = await PDFDocument.create();
-    const page = pdfDoc.addPage([595, 842]); // A4 size
-
-    // Embed the font
-    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-    const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-
-    // Draw header
-    page.drawText('EVENTNEX - ANALYSE STRATÉGIQUE APPROFONDIE', {
-      x: 50,
-      y: 800,
-      size: 18,
-      font: boldFont,
-      color: rgb(0, 0, 0)
-    });
-
-    // Draw client info
-    page.drawText(`Client: ${payload.nom_entite}`, {
-      x: 50,
-      y: 770,
-      size: 12,
-      font: font,
-      color: rgb(0, 0, 0)
-    });
-
-    page.drawText(`Responsable: ${payload.nom_prenom}`, {
-      x: 50,
-      y: 750,
-      size: 12,
-      font: font,
-      color: rgb(0, 0, 0)
-    });
-
-    page.drawText(`Date: ${new Date().toLocaleDateString()}`, {
-      x: 50,
-      y: 730,
-      size: 12,
-      font: font,
-      color: rgb(0, 0, 0)
-    });
-
-    // Draw AI score section
-    const scoreColor = analyseScore.score >= 80 ? rgb(0.8, 0, 0) :
-                      analyseScore.score >= 50 ? rgb(0.8, 0.5, 0) :
-                      rgb(0, 0, 0.8);
-
-    page.drawText('SCORE DE MATURITÉ EVENTNEX', {
-      x: 50,
-      y: 700,
-      size: 16,
-      font: boldFont,
-      color: scoreColor
-    });
-
-    page.drawText(`${analyseScore.score}%`, {
-      x: 50,
-      y: 670,
-      size: 48,
-      font: boldFont,
-      color: scoreColor
-    });
-
-    // Draw score description
-    const scoreDescription = analyseScore.score >= 80 ? "Excellent - Système optimisé" :
-                          analyseScore.score >= 60 ? "Bon - Améliorations possibles" :
-                          analyseScore.score >= 40 ? "Critique - Intervention requise" :
-                          "Urgent - Risque opérationnel élevé";
-    page.drawText(`"${scoreDescription}"`, {
-      x: 50,
-      y: 640,
-      size: 12,
-      font: boldFont,
-      color: scoreColor
-    });
-
-    // Draw key metrics
-    page.drawText('MÉTRIQUES CLÉS', {
-      x: 50,
-      y: 600,
-      size: 14,
-      font: boldFont,
-      color: rgb(0, 0, 0)
-    });
-
-    const metrics = [
-      `Priorité: ${payload.diagnostic_priorite || 'Non spécifié'}`,
-      `Résultats Actuels: ${payload.mesure_resultats || 'Non spécifié'}`,
-      `Outils: ${Array.isArray(payload.outils) ? payload.outils.join(', ') : payload.outils || 'Non spécifié'}`,
-      `Problèmes: ${Array.isArray(payload.problemes_billetterie) ? payload.problemes_billetterie.join(', ') : payload.problemes_billetterie || 'Aucun'}`
-    ];
-
-    metrics.forEach((metric, index) => {
-      page.drawText(`• ${metric}`, {
-        x: 50,
-        y: 580 - (index * 20),
-        size: 10,
-        font: font,
-        color: rgb(0, 0, 0)
-      });
-    });
-
-    // Draw footer
-    page.drawText('Eventnex Data Core - Rapport Généré Automatiquement', {
-      x: 50,
-      y: 50,
-      size: 8,
-      font: font,
-      color: rgb(0.5, 0.5, 0.5)
-    });
-
-    // Serialize the PDF
-    const pdfBytes = await pdfDoc.save();
-    return pdfBytes;
-  } catch (error) {
-    console.error('PDF Generation Error:', error);
-    return null;
-  }
-};
 
 const sendBrevoEmail = async (recipient, subject, textContent, attachments = []) => {
   if (!BREVO_API_KEY) {
@@ -572,14 +470,24 @@ exports.handler = async function(event) {
       return { forces, faiblesses, opportunites, menaces };
     };
 
-    const generateRealisticFinancials = (score) => {
-      const baseRoi = Math.max(20, 150 + (score - 50) * 2);
-      const baseReduction = Math.max(15000, 50000 + (score - 50) * 2000);
-      const baseAugmentation = Math.max(5, 20 + (score - 50) * 0.8);
+    const generateRealisticFinancials = (score, payload) => {
+      const budgetRanges = {
+        "Moins de 100 000 FCFA/An": 75000,
+        "100 000 - 500 000 FCFA/An": 300000,
+        "500 000 - 1 000 000 FCFA/An": 750000,
+        "Plus de 1 000 000 FCFA/An": 1500000
+      };
+      const budgetAnnuel = budgetRanges[payload.budget] || null;
+
+      const reductionPct = Math.max(5, Math.min(25, 30 - score * 0.2));
+      const roiPct = Math.max(50, Math.min(200, 250 - score * 1.5));
+
       return {
-        roi: `${baseRoi}%`,
-        reduction_couts: `${baseReduction.toLocaleString()} FCFA/mois`,
-        augmentation_revenus: `${baseAugmentation}%`
+        roi: `${Math.round(roiPct)}% (estimation indicative, non contractuelle)`,
+        reduction_couts: budgetAnnuel
+          ? `~${Math.round(budgetAnnuel * reductionPct / 100 / 12).toLocaleString()} FCFA/mois (estimé sur ${reductionPct.toFixed(0)}% du budget annuel déclaré: ${payload.budget})`
+          : "Non calculable — budget non renseigné",
+        augmentation_revenus: `${reductionPct.toFixed(0)}% (estimation basée sur la fréquence et le volume de participants déclarés: ${payload.frequence || 'non renseigné'}, ${payload.nb_participants || 'non renseigné'} participants)`
       };
     };
 
@@ -604,11 +512,18 @@ exports.handler = async function(event) {
       return "Structure globalement saine : l'accent peut être mis sur le pilotage data-driven.";
     };
 
+    const generateRealisticClientMessage = (payload) => {
+      const priority = payload.diagnostic_priorite || 'vos priorités';
+      const entity = payload.nom_entite || 'votre organisation';
+      return `Merci d'avoir partagé les priorités de ${entity}. Nous avons bien noté votre besoin autour de "${priority}" et les points de friction identifiés. Notre équipe prépare une démonstration personnalisée pour répondre concrètement à ces enjeux.`;
+    };
+
     // AI Scoring Pass 1 - with enhanced error handling and data validation
     let analyseScore = {
       score: 50,
       justification: "Analyse en cours - données en cours de traitement",
       conseil_vente: "Notre équipe vous contactera pour une analyse approfondie",
+      message_client: "",
       swot: {
         forces: ["À déterminer lors de l'audit complet"],
         faiblesses: ["À déterminer lors de l'audit complet"],
@@ -627,6 +542,8 @@ exports.handler = async function(event) {
       ]
     };
 
+    let aiTechnicalFailure = false;
+
     try {
       // Validate payload has minimum required data for AI analysis
       const requiredFields = [
@@ -634,6 +551,11 @@ exports.handler = async function(event) {
         'diagnostic_priorite', 'mesure_resultats'
       ];
       const hasRequiredData = requiredFields.every(field => payload[field]);
+
+      if (!hasRequiredData) {
+        aiTechnicalFailure = true;
+        console.log("Données insuffisantes pour l'analyse IA, fallback déterministe activé.");
+      }
 
       if (hasRequiredData) {
         const scoringPrompt = generateAIPrompt(payload, true);
@@ -653,7 +575,8 @@ exports.handler = async function(event) {
             projection_financiere: {
               ...analyseScore.projection_financiere,
               ...parsedScore.projection_financiere
-            }
+            },
+            message_client: parsedScore.message_client || analyseScore.message_client
           };
 
           // Ensure recommendations array exists and has at least 3 items
@@ -662,29 +585,37 @@ exports.handler = async function(event) {
           }
         } catch (parseError) {
           console.log("Erreur de parsing JSON IA:", parseError.toString());
+          aiTechnicalFailure = true;
         }
       }
     } catch (err) {
       console.log("Erreur IA : " + err.toString());
+      aiTechnicalFailure = true;
     }
 
-    // Use realistic calculations if AI fails or returns defaults
-    const finalScore = analyseScore.score === 50 && analyseScore.justification.includes('Erreur') ?
-      calculateRealisticScore(payload) : analyseScore.score;
+    // Garde-fou unifié : détecte soit un échec technique de l'IA, soit un score incohérent
+    const deterministicScore = calculateRealisticScore(payload);
+    const aiFailedTechnically = aiTechnicalFailure || analyseScore.justification.includes('Erreur') || typeof analyseScore.score !== 'number';
 
-    const finalInsights = analyseScore.justification.includes('Erreur') ?
-      generateRealisticInsights(payload, finalScore) : analyseScore.justification;
+    let scoreEcartSuspect = false;
+    if (!aiFailedTechnically && typeof analyseScore.score === 'number') {
+      const ecart = Math.abs(analyseScore.score - deterministicScore);
+      if (ecart > 25) {
+        scoreEcartSuspect = true;
+        console.log(`Écart suspect détecté: IA=${analyseScore.score}%, Déterministe=${deterministicScore}%`);
+      }
+    }
 
-    const finalSwot = analyseScore.justification.includes('Erreur') ?
-      generateRealisticSWOT(payload) : analyseScore.swot;
+    // Un seul indicateur qui décide de TOUT le contenu envoyé (score, SWOT, insights, recommandations, conseil)
+    const useRealisticFallback = aiFailedTechnically || scoreEcartSuspect;
 
-    const finalFinancials = analyseScore.justification.includes('Erreur') ?
-      generateRealisticFinancials(finalScore) : analyseScore.projection_financiere;
-
-    const finalRecommandations = analyseScore.justification.includes('Erreur') ?
-      generateRealisticRecommandations(payload) : (analyseScore.recommandations || []);
-    const finalConseil = analyseScore.justification.includes('Erreur') ?
-      generateRealisticConseil(payload, finalScore) : analyseScore.conseil_vente;
+    const finalScore = useRealisticFallback ? deterministicScore : analyseScore.score;
+    const finalInsights = useRealisticFallback ? generateRealisticInsights(payload, finalScore) : analyseScore.justification;
+    const finalSwot = useRealisticFallback ? generateRealisticSWOT(payload) : analyseScore.swot;
+    const finalFinancials = useRealisticFallback ? generateRealisticFinancials(finalScore, payload) : analyseScore.projection_financiere;
+    const finalRecommandations = useRealisticFallback ? generateRealisticRecommandations(payload) : (analyseScore.recommandations || []);
+    const finalConseil = useRealisticFallback ? generateRealisticConseil(payload, finalScore) : analyseScore.conseil_vente;
+    const finalClientMessage = useRealisticFallback ? generateRealisticClientMessage(payload) : (analyseScore.message_client || generateRealisticClientMessage(payload));
 
     const accessToken = await getAccessToken();
     const rowData = buildRow(payload, { ...analyseScore, score: finalScore });
@@ -695,7 +626,7 @@ exports.handler = async function(event) {
 
     // Create comprehensive sales email with real calculated data
     const salesContent = `FICHE STRATÉGIQUE COMMERCIALE - ${payload.nom_entite}
-
+${scoreEcartSuspect ? '\n⚠️ ALERTE: Écart important entre le score IA et le score calculé sur les données réelles. Analyse complète (score, SWOT, recommandations) basculée automatiquement vers le calcul déterministe.\n' : ''}${aiFailedTechnically ? '\n⚠️ ALERTE: L\'IA n\'a pas répondu correctement. Analyse complète générée par calcul déterministe (fallback).\n' : ''}
 ANALYSE RAPIDE:
 - Score de Maturité: ${finalScore}%
 - Secteur: ${payload.statut_entite} / ${payload.sous_statut}
@@ -711,10 +642,13 @@ Faiblesses: ${finalSwot.faiblesses.join(', ')}
 Opportunités: ${finalSwot.opportunites.join(', ')}
 Menaces: ${finalSwot.menaces.join(', ')}
 
-PROJECTIONS FINANCIÈRES:
+PROJECTIONS FINANCIÈRES (estimation indicative sectorielle, non calculée à partir des dépenses réelles du prospect):
 - ROI Estimé: ${finalFinancials.roi}
 - Réduction Coûts: ${finalFinancials.reduction_couts}
 - Augmentation Revenus: ${finalFinancials.augmentation_revenus}
+
+CONSEIL COMMERCIAL (INTERNE - ne pas partager tel quel avec le client):
+${finalConseil}
 
 RECOMMANDATIONS PRIORITAIRES:
 ${finalRecommandations.map((rec, i) => `${i+1}. ${rec}`).join('\n')}
@@ -754,23 +688,16 @@ Généré automatiquement par Eventnex AI - ${new Date().toLocaleString()}`;
 
     // Send confirmation email to user with summary, time and score
     try {
-      const userSubject = `Confirmation de votre audit Eventnex (Score: ${finalScore}%)`;
+      const userSubject = `Confirmation de votre audit Eventnex`;
       const userContent = `Bonjour ${payload.nom_prenom},
 
 Merci d'avoir complété l'audit stratégique Eventnex pour ${payload.nom_entite}. Voici votre récapitulatif personnel:
 
-VOTRE SCORE DE MATURITÉ: ${finalScore}%
-${finalInsights}
-
-TEMPS DE REMPLISSAGE: ${payload.telemetrie_temps || 'Non mesuré'}
+${finalClientMessage}
 
 VOS PRIORITÉS IDENTIFIÉES:
 - ${payload.diagnostic_priorite}
-- ${payload.mesure_resultats}
 - ${Array.isArray(payload.problemes_billetterie) ? payload.problemes_billetterie.join(', ') : payload.problemes_billetterie}
-
-CONSEIL PERSONNALISÉ:
-${finalConseil}
 
 PROCHAINE ÉTAPE:
 Votre démonstration est prévue le ${formatDate(payload.date_demo)} à ${payload.heure_demo || 'Heure à confirmer'}

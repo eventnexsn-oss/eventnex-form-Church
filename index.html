@@ -153,7 +153,7 @@
                     </div>
 
                     <div class="form-field">
-                        <label class="field-label">Adresse complète <span class="field-desc">(Pour géomarketing)</span></label>
+                        <label class="field-label">Adresse complète <span class="field-desc">(Pro/perso)</span></label>
                         <input type="text" name="adresse" class="input-text" placeholder="Ex: 123 Rue Principal, Dakar, Sénégal">
                     </div>
 
@@ -472,7 +472,7 @@
                         <label class="field-label">Créneau d'audit (Entre 16h00 et 21h30) <span class="required-star">*</span></label>
                         <div style="display:flex; gap:15px; flex-wrap:wrap;">
                             <div style="flex:1; min-width:180px;">
-                                <input type="date" name="date_demo" id="date_demo" class="input-text required-field">
+                                <input type="date" name="date_demo" id="date_demo" class="input-text required-field" min="2026-08-08" max="2027-12-31">
                             </div>
                             <div style="flex:1; min-width:180px;">
                                 <input type="time" name="heure_demo" id="heure_demo" min="16:00" max="21:30" class="input-text required-field">

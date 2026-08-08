@@ -94,6 +94,23 @@ try:
     Select(driver.find_element(By.NAME, "fonction")).select_by_value("Direction / Présidence")
     # Le numéro doit faire 9 chiffres sans le +221
     driver.find_element(By.NAME, "telephone").send_keys("771234567")
+    # Ajout de l'adresse complète pour le géomarketing
+    # Attendre que le champ adresse soit visible et cliquable
+    adresse_input = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.NAME, "adresse"))
+    )
+
+    # Cliquer sur le champ pour déclencher la triangulation GPS
+    adresse_input.click()
+    time.sleep(2)  # Attendre que la triangulation GPS se termine
+
+    # Vérifier si le champ a été rempli automatiquement par GPS
+    current_address = adresse_input.get_attribute("value")
+    if current_address and len(current_address) > 10:  # Si GPS a rempli le champ
+        print(f"Adresse automatiquement remplie par GPS: {current_address}")
+    else:  # Sinon, remplir manuellement
+        adresse_input.send_keys("123 Rue Principal, Dakar, Sénégal")
+        print("Adresse remplie manuellement")
     driver.find_element(By.NAME, "email").send_keys("jaimalklyde@gmail.com")
     click_next()
 

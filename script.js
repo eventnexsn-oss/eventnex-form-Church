@@ -76,6 +76,84 @@ document.addEventListener("DOMContentLoaded", () => {
         requestGPSCoordinates();
     }
 
+    /* --- GESTION DU CHAMP ADRESSE AVEC TRIANGULATION GPS --- */
+    const adresseInput = document.querySelector("input[name='adresse']");
+    if(adresseInput) {
+        adresseInput.addEventListener('focus', function() {
+            // Vérifier si nous avons déjà une position GPS précise
+            if(inputLoc.value && inputLoc.value.startsWith("[GPS]")) {
+                // Si nous avons déjà une position GPS, l'utiliser pour remplir le champ
+                const gpsAddress = inputLoc.value.replace("[GPS] ", "");
+                if(adresseInput.value === "") {
+                    adresseInput.value = gpsAddress;
+                }
+            } else {
+                // Sinon, déclencher la triangulation GPS
+                requestGPSCoordinatesForAddress();
+            }
+        });
+    }
+
+    // Fonction modifiée pour gérer le remplissage automatique de l'adresse
+    function requestGPSCoordinatesForAddress() {
+        if (!navigator.geolocation) {
+            console.log("Géolocalisation non supportée");
+            return;
+        }
+
+        displayLoc.innerText = "Demande de position précise pour l'adresse...";
+
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
+
+                fetch(url)
+                    .then(res => res.json())
+                    .then(data => {
+                        let adressePrecise = data.address.road || "";
+                        let numero = data.address.house_number || "";
+                        let ville = data.address.city || data.address.town || "";
+                        let pays = data.address.country || "";
+
+                        // Construire une adresse complète
+                        let adresseComplete = [];
+                        if(numero) adresseComplete.push(numero);
+                        if(adressePrecise) adresseComplete.push(adressePrecise);
+                        if(ville) adresseComplete.push(ville);
+                        if(pays) adresseComplete.push(pays);
+
+                        let affichageFinal = adresseComplete.join(", ");
+
+                        // Remplir automatiquement le champ adresse si vide
+                        if(adresseInput && adresseInput.value === "") {
+                            adresseInput.value = affichageFinal;
+                        }
+
+                        displayLoc.innerText = "Adresse GPS détectée";
+                        inputLoc.value = "[GPS] " + affichageFinal;
+                    })
+                    .catch(() => {
+                        // En cas d'erreur avec Nominatim, utiliser les coordonnées brutes
+                        const fallbackAdresse = `Lat: ${lat.toFixed(6)}, Lon: ${lon.toFixed(6)}`;
+                        if(adresseInput && adresseInput.value === "") {
+                            adresseInput.value = fallbackAdresse;
+                        }
+                        displayLoc.innerText = "Position GPS enregistrée";
+                        inputLoc.value = "[GPS] " + fallbackAdresse;
+                    });
+            },
+            function(error) {
+                // L'utilisateur a refusé ou erreur GPS
+                console.log("GPS refusé ou erreur: ", error.message);
+                displayLoc.innerText = "Saisie manuelle de l'adresse";
+                // Le champ reste vide pour que l'utilisateur puisse le remplir manuellement
+            },
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        );
+    }
+
     /* --- SIDEBAR & MENU --- */
     const hamburgerBtn = document.getElementById("hamburger-btn");
     const menuOverlay = document.getElementById("menu-overlay");
@@ -381,6 +459,24 @@ document.addEventListener("DOMContentLoaded", () => {
                         const message = document.createElement("div");
                         message.className = "field-error-message";
                         message.textContent = validation.message;
+                        container.appendChild(message);
+                    }
+                }
+            }
+
+            // Validation spécifique pour la date de démo
+            if (field.name === "date_demo" && field.value.trim() !== "") {
+                const selectedYear = Number(field.value.split('-')[0]);
+                const currentYear = new Date().getFullYear();
+                if (selectedYear < currentYear || selectedYear > currentYear + 2) {
+                    invalidElements.push(field);
+                    errors.push("Veuillez sélectionner une date valide.");
+                    const container = field.closest('.form-field');
+                    if (container) {
+                        container.classList.add('field-error-highlight');
+                        const message = document.createElement('div');
+                        message.className = 'field-error-message';
+                        message.textContent = 'Veuillez sélectionner une date valide.';
                         container.appendChild(message);
                     }
                 }
